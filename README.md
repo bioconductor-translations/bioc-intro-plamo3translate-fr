@@ -65,10 +65,10 @@ Community](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcb
 Computational Biology 21 (4): e1012925.
 
 
-## Updating the Japanese episodes
+## Updating the French episodes
 
 The translation tool reads the English episodes from `upstream/main`, reuses
-the reviewed Japanese translations, and translates changed prose with the
+matching French translations, and translates changed prose with the
 pinned PLaMo model:
 
 ```sh
@@ -89,7 +89,7 @@ the network:
 python3.12 -m unittest discover -s tests -v
 ```
 
-To build the translated site with Japanese navigation, bibliography citations,
+To build the translated site with French navigation, bibliography citations,
 and theme icons, run:
 
 ```sh

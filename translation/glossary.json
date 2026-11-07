@@ -1,79 +1,79 @@
 [
   {
     "source": "data frame",
-    "target": "データフレーム"
+    "target": "tableau de données"
   },
   {
     "source": "data frames",
-    "target": "データフレーム"
+    "target": "tableaux de données"
   },
   {
     "source": "vector",
-    "target": "ベクトル"
+    "target": "vecteur"
   },
   {
     "source": "vectors",
-    "target": "ベクトル"
+    "target": "vecteurs"
   },
   {
     "source": "factor",
-    "target": "因子"
+    "target": "facteur"
   },
   {
     "source": "factors",
-    "target": "因子"
+    "target": "facteurs"
   },
   {
     "source": "atomic vector",
-    "target": "アトミックベクトル"
+    "target": "vecteur atomique"
   },
   {
     "source": "atomic vectors",
-    "target": "アトミックベクトル"
+    "target": "vecteurs atomiques"
   },
   {
     "source": "tidy data",
-    "target": "整然データ"
+    "target": "données ordonnées"
   },
   {
     "source": "gene expression",
-    "target": "遺伝子発現"
+    "target": "expression génique"
   },
   {
     "source": "spreadsheet",
-    "target": "スプレッドシート"
+    "target": "feuille de calcul"
   },
   {
     "source": "spreadsheets",
-    "target": "スプレッドシート"
+    "target": "feuilles de calcul"
   },
   {
     "source": "working directory",
-    "target": "作業ディレクトリ"
+    "target": "répertoire de travail"
   },
   {
     "source": "data wrangling",
-    "target": "データ加工"
+    "target": "manipulation des données"
   },
   {
     "source": "wide format",
-    "target": "ワイド形式"
+    "target": "format large"
   },
   {
     "source": "long format",
-    "target": "ロング形式"
+    "target": "format long"
   },
   {
     "source": "wider and longer formats",
-    "target": "ワイド形式とロング形式"
+    "target": "formats large et long"
   },
   {
     "source": "non-optional arguments",
-    "target": "必須の引数"
+    "target": "arguments obligatoires"
   },
   {
     "source": "log2 transformation",
-    "target": "底が2の対数変換"
+    "target": "transformation logarithmique en base 2"
   },
   {
     "source": "abnormal DNA methylation",

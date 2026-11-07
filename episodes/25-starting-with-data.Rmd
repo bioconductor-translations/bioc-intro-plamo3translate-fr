@@ -1,6 +1,6 @@
 ---
 source: Rmd
-title: "データから始める"
+title: "Débuts avec les données"
 teaching: 30
 exercises: 30
 ---
@@ -10,65 +10,65 @@ exercises: 30
 
 ::::::::::::::::::::::::::::::::::::::: objectives
 
-- `data.frame`とは何か説明してください。
-- .csvファイルから外部データをデータフレームに読み込みます。
-- データフレームの内容を要約します。
-- 因子とは何か説明してください。
-- 文字列と因子を相互に変換します。
-- 因子の順序を入れ替え、名称を変更します。
-- 日付をフォーマットします。
-- データをエクスポートして保存します。
+- Décrivez ce qu'est un `data.frame`.
+- Charger des données externes depuis un fichier .csv dans un tableau de données.
+- Résumer le contenu d'un tableau de données.
+- Décrivez ce qu'est un facteur.
+- Convertir entre chaînes de caractères et facteurs.
+- Réordonner et renommer les facteurs.
+- Formater les dates.
+- Exporter et enregistrer les données.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::::: questions
 
-- Rによる初めてのデータ分析
+- Première analyse de données dans R
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-> このエピソードは、Data Carpentriesの*「生態学者のためのRによるデータ分析と可視化」*レッスンに基づいています。
+> Cet épisode est basé sur la leçon *Data Analysis and Visualisation in R for Ecologists* de Data Carpentries.
 
-## 遺伝子発現データの提示
+## Présentation des données d'expression génique
 
-[Blackmore *et al.* (2017)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5544260/)が発表したデータの一部である『*The effect of upper-respiratory infection on transcriptomic changes in the CNS*』を使用します。本研究の目的は、上気道感染症が感染後の小脳および脊髄で起こるRNA転写の変化に及ぼす影響を明らかにすることでした。性別を一致させた8週齢のC57BL/6マウスに、生理食塩水またはインフルエンザA型を経鼻投与し、0日目（非感染）、4日目、および8日目にRNA-seqを用いて小脳および脊髄組織におけるトランスクリプトームの変化を評価しました。
+Nous allons utiliser une partie des données publiées par [Blackmore *et al.* (2017)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5544260/), *The effect of upper-respiratory infection on transcriptomic changes in the CNS*. L'objectif de l'étude était de déterminer l'effet d'une infection des voies respiratoires supérieures sur les modifications de la transcription de l'ARN dans le cervelet et la moelle épinière après l'infection. Des souris C57BL/6 âgées de huit semaines et appariées selon le sexe ont reçu, par voie intranasale, du sérum physiologique ou le virus de la grippe A. Les modifications transcriptomiques dans les tissus du cervelet et de la moelle épinière ont été évaluées par RNA-seq aux jours 0 (souris non infectées), 4 et 8.
 
-データセットはカンマ区切り値（CSV）ファイルとして保存されています。各行には単一のRNA発現測定に関する情報が含まれており、最初の11列はそれぞれ以下を表しています。
+L'ensemble de données est stocké sous la forme d'un fichier de valeurs séparées par des virgules (CSV). Chaque ligne contient des informations concernant une seule mesure d'expression ARN, et les onze premières colonnes représentent :
 
-| 列 | 説明 |
+| Colonne | Description |
 | ---------- | -------------------------------------------------------------------------------------------- |
-| gene       | 測定された遺伝子名 |
-| sample     | 遺伝子発現を測定したサンプル名 |
-| expression | 遺伝子発現の値 |
-| organism   | 生物体/種 - ここではすべてのデータがマウス由来です。 |
-| age        | マウスの年齢（ここではすべてのマウスが8週齢でした） |
-| sex        | マウスの性別 |
-| infection  | マウスの感染状態、すなわちインフルエンザA型への感染の有無です。 |
-| strain     | A型インフルエンザ株。 |
-| time       | 感染期間（日数）。 |
-| tissue     | 遺伝子発現実験に用いられた組織、すなわち小脳または脊髄。 |
-| mouse      | マウスの一意の識別子。 |
+| gene       | Le nom du gène mesuré |
+| sample     | Le nom de l'échantillon dans lequel l'expression génique a été mesurée |
+| expression | La valeur de l'expression génique |
+| organism   | L'organisme/l'espèce - ici, toutes les données proviennent de souris |
+| age        | L'âge de la souris (ici, toutes les souris avaient 8 semaines) |
+| sex        | Le sexe de la souris |
+| infection  | L'état infectieux de la souris, c'est-à-dire infectée par le virus de la grippe A ou non infectée. |
+| strain     | La souche du virus de la grippe A. |
+| time       | La durée de l'infection (en jours). |
+| tissue     | Le tissu utilisé pour l'expérience d'expression génique, c'est-à-dire le cervelet ou la moelle épinière. |
+| mouse      | L'identifiant unique de la souris. |
 
-Rの関数`download.file()`を使用して遺伝子発現データを含むCSVファイルをダウンロードし、`read.csv()`を用いてCSVファイルの内容をクラス`data.frame`のオブジェクトとしてメモリに読み込みます。`download.file`コマンドの最初の項目は、ソースURLを示す文字列です。このソースURLは、GitHubリポジトリからCSVファイルをダウンロードします。カンマ（`"data/rnaseq.csv"`）以降のテキストは、ローカルマシン上のファイルの保存先です。ファイルをダウンロードするための`"data"`というフォルダがマシン上に必要になります。したがって、このコマンドはリモートファイルをダウンロードし、`"rnaseq.csv"`という名前を付けて、既存の`"data"`というフォルダに追加します。
+Nous allons utiliser la fonction R `download.file()` pour télécharger le fichier CSV contenant les données d'expression génique, et nous utiliserons `read.csv()` pour charger dans la mémoire le contenu du fichier CSV sous la forme d'un objet de classe `data.frame`. Dans la commande `download.file`, la première entrée est une chaîne de caractères contenant l'URL de la source. Cette URL de source télécharge un fichier CSV depuis un dépôt GitHub. Le texte après la virgule (`"data/rnaseq.csv"`) correspond à la destination du fichier sur votre machine locale. Vous devrez disposer d'un dossier sur votre machine nommé `"data"` où vous téléchargerez le fichier. Ainsi, cette commande télécharge le fichier distant, le nomme `"rnaseq.csv"` et l'ajoute à un dossier déjà existant nommé `"data"`.
 
 ```{r, eval=TRUE}
 download.file(url = "https://github.com/carpentries-incubator/bioc-intro/raw/main/episodes/data/rnaseq.csv",
               destfile = "data/rnaseq.csv")
 ```
 
-これでデータを読み込む準備が整いました。
+Vous êtes désormais prêt à charger les données :
 
 ```{r, eval=TRUE, purl=TRUE}
 rna <- read.csv("data/rnaseq.csv")
 ```
 
-この記述では何も出力されません。ご記憶にある通り、代入を行っても何も表示されないためです。データが読み込まれたか確認したい場合は、データフレーム名を入力することでその内容を表示できます。
+Cette instruction ne produit aucun résultat car, comme vous vous en souvenez peut-être, les affectations n'affichent rien. Si nous voulons vérifier que nos données ont été chargées, nous pouvons consulter le contenu du tableau de données en saisissant son nom :
 
 ```{r, eval=FALSE}
 rna
 ```
 
-うわあ……かなりの出力量ですね。少なくとも、データが正常に読み込まれたということですね。関数 `head()` を使って、このデータフレームの先頭（最初の6行）を確認してみましょう：
+Waouh... c'était beaucoup de résultats. Au moins, cela signifie que les données ont été chargées correctement. Vérifions le début (les 6 premières lignes) de ce tableau de données à l'aide de la fonction `head()` :
 
 ```{r, purl=TRUE}
 head(rna)
@@ -76,9 +76,9 @@ head(rna)
 ## View(rna)
 ```
 
-**注**
+**Note**
 
-`read.csv()` はフィールドがカンマで区切られていることを前提としていますが、一部の国ではカンマが小数点の区切り文字として、セミコロン (;) がフィールドの区切り文字として使用されています。R でこのような形式のファイルを読み込む場合は、`read.csv2()` 関数を使用できます。この関数は `read.csv()` と全く同様に動作しますが、小数点およびフィールドの区切り文字に異なるパラメータを使用します。別の形式を扱う場合は、どちらもユーザーが指定可能です。詳細については、`?read.csv` と入力して `read.csv()` のヘルプを参照してください。また、タブ区切りのデータファイルを読み込むための `read.delim()` 関数もあります。重要な点として、これらの関数はすべて、実際には異なる引数を持つメインの `read.table()` 関数のラッパー関数となっています。そのため、上記のデータは `,` のように区切り文字引数を指定して `read.table()` を使用して読み込むこともできました。コードは以下の通りです。
+`read.csv()` suppose que les champs sont séparés par des virgules ; cependant, dans plusieurs pays, la virgule est utilisée comme séparateur décimal et le point-virgule (;) comme séparateur de champs. Si vous souhaitez lire ce type de fichiers dans R, vous pouvez utiliser la fonction `read.csv2()`. Elle se comporte exactement comme `read.csv()`, mais utilise des paramètres différents pour les séparateurs décimaux et de champs. Si vous travaillez avec un autre format, ces deux paramètres peuvent être spécifiés par l'utilisateur. Consultez l'aide de `read.csv()` en saisissant `?read.csv` pour en savoir plus. Il existe également la fonction `read.delim()` pour lire des fichiers de données séparés par des tabulations. Il est important de noter que toutes ces fonctions sont en réalité des fonctions wrapper pour la fonction principale `read.table()` avec des arguments différents. Ainsi, les données ci-dessus auraient également pu être chargées en utilisant `read.table()` avec le paramètre de séparation `,`. Le code est le suivant :
 
 ```{r, eval=TRUE, purl=TRUE}
 rna <- read.table(file = "data/rnaseq.csv",
@@ -86,15 +86,15 @@ rna <- read.table(file = "data/rnaseq.csv",
                   header = TRUE)
 ```
 
-デフォルトでは `read.table()` の header 引数が FALSE に設定されているため、ヘッダーを読み込むには header 引数を TRUE に設定する必要があります。
+L'argument header doit être défini à TRUE pour pouvoir lire les en-têtes, car par défaut, `read.table()` a l'argument header défini à FALSE.
 
-## データフレームとは何ですか？
+## Qu'est-ce que des tableaux de données ?
 
-データフレームは、ほとんどの表形式データにおける*事実上の*データ構造であり、統計処理やプロットに用いられます。
+Les tableaux de données sont la structure de données *de facto* pour la plupart des données tabulaires, et ce que nous utilisons pour la statistique et la représentation graphique.
 
-データフレームは手動で作成することもできますが、一般的には`read.csv()`や`read.table()`といった関数を用いて生成されます。言い換えれば、ハードディスク（またはウェブ）からスプレッドシートをインポートする際に作成されます。
+Un tableau de données peut être créé manuellement, mais il est le plus souvent généré par les fonctions `read.csv()` ou `read.table()` ; en d'autres termes, lors de l'importation de feuilles de calcul depuis votre disque dur (ou le Web).
 
-データフレームとは、列がすべて同じ長さのベクトルである表形式のデータ表現のことです。列はベクトルであるため、各列には単一のデータ型（例：文字、整数、因子）が含まれている必要があります。例えば、以下は数値ベクトル、文字ベクトル、および論理ベクトルからなるデータフレームを示した図です。
+Un tableau de données est la représentation de données sous la forme d'un tableau où les colonnes sont des vecteurs de longueur identique. Comme les colonnes sont des vecteurs, chacune d'elles doit contenir un seul type de données (par exemple, des caractères, des entiers, des facteurs). Voici, par exemple, une figure illustrant un tableau de données comprenant un vecteur numérique, un vecteur de caractères et un vecteur logique.
 
 ```{r, results="markup", fig.cap="Conceptual representation of a data.frame", echo=FALSE, purl=FALSE, out.width="70%", fig.align="center", fig.alt="Schematic representation of a tablular structure with different colours representing different columns and variables types."}
 knitr::include_graphics("fig/data-frame.svg")
@@ -103,62 +103,62 @@ knitr::include_graphics("fig/data-frame.svg")
 
 
 
-これは、`str()`関数を用いてデータフレームの<b>str</b>構造を確認することで分かります。
+Nous pouvons le constater en examinant la <b>str</b>ucture d'un tableau de données avec la fonction `str()` :
 
 ```{r}
 str(rna)
 ```
 
-## `data.frame` オブジェクトの確認 {#inspecting-data-frame-objects}
+## Inspection des objets `data.frame` {#inspecting-data-frame-objects}
 
-データフレームの内容や構造を確認する際に、`head()` や `str()` といった関数がどのように役立つかはすでに見てきました。ここでは、データの内容や構造を把握するための関数を、網羅的ではありませんがいくつか紹介します。さっそく試してみましょう！
+Nous avons déjà vu comment les fonctions `head()` et `str()` peuvent être utiles pour vérifier le contenu et la structure d'un tableau de données. Voici une liste non exhaustive de fonctions permettant de se faire une idée du contenu et de la structure des données. Essayons-les !
 
-**サイズ**:
+**Taille** :
 
-- `dim(rna)` - 行数を第1要素、列数を第2要素とするベクトル（オブジェクトの**次元**）を返します。
-- `nrow(rna)` - 行数を返します。
-- `ncol(rna)` - 列数を返します。
+- `dim(rna)` - retourne un vecteur dont le premier élément est le nombre de lignes et le second le nombre de colonnes (les **dimensions** de l'objet).
+- `nrow(rna)` - renvoie le nombre de lignes.
+- `ncol(rna)` - renvoie le nombre de colonnes.
 
-**内容**:
+**Contenu** :
 
-- `head(rna)` - 最初の6行を表示します。
-- `tail(rna)` - 直近の6行を表示します。
+- `head(rna)` - affiche les 6 premières lignes.
+- `tail(rna)` - affiche les 6 dernières lignes.
 
-**名称**:
+**Noms** :
 
-- `names(rna)` - 列名を返します（`data.frame`オブジェクトの場合は`colnames()`と同義です）。
-- `rownames(rna)` - 行名を返します。
+- `names(rna)` - renvoie les noms des colonnes (synonyme de `colnames()` pour les objets `data.frame`).
+- `rownames(rna)` - renvoie les noms de lignes.
 
-**概要**:
+**Résumé** :
 
-- `str(rna)` - オブジェクトの構造、およびクラス、各列の長さと内容に関する情報。
-- `summary(rna)` - 各列の要約統計量。
+- `str(rna)` - structure de l'objet et informations sur la classe, la longueur et le contenu de chaque colonne.
+- `summary(rna)` - statistiques de synthèse pour chaque colonne.
 
-注：これらの関数の多くは「汎用的」であり、`data.frame`以外の種類のオブジェクトにも使用できます。
+Note : la plupart de ces fonctions sont « génériques » ; elles peuvent être utilisées sur d'autres types d'objets en plus de `data.frame`.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## 課題：
+## Défi :
 
-`str(rna)`の出力結果をもとに、以下の質問に答えられますか？
+Sur la base de la sortie de `str(rna)`, pouvez-vous répondre aux questions suivantes ?
 
-- オブジェクト `rna` のクラスは何ですか？
-- このオブジェクトの行数と列数はそれぞれいくつですか？
+- Quelle est la classe de l'objet `rna` ?
+- Combien y a-t-il de lignes et de colonnes dans cet objet ?
 
 :::::::::::::::  solution
 
-## 解答
+## Solution
 
-- クラス: データフレーム
-- 行数: `r nrow(rna)`、列数: `r ncol(rna)`
+- classe : tableau de données
+- nombre de lignes : `r nrow(rna)`, nombre de colonnes : `r ncol(rna)`
 
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## データフレームのインデックス指定と部分抽出
+## Indexation et extraction de sous-ensembles de tableaux de données
 
-今回の`rna`データフレームには行と列（2次元）があります。ここから特定のデータを抽出したい場合は、目的の「座標」を指定する必要があります。まず行番号、次に列番号の順で指定します。ただし、これらの座標の指定方法によって、得られる結果のクラスが異なる点に注意してください。
+Notre tableau de données `rna` possède des lignes et des colonnes (il a 2 dimensions) ; si nous souhaitons en extraire certaines données spécifiques, nous devons spécifier les « coordonnées » souhaitées. Les numéros de ligne viennent en premier, suivis des numéros de colonne. Notez toutefois que différentes manières de spécifier ces coordonnées donnent des résultats de classes différentes.
 
 ```{r, eval=FALSE, purl=TRUE}
 # first element in the first column of the data frame (as a vector)
@@ -178,16 +178,16 @@ head_rna <- rna[1:6, ]
 head_rna
 ```
 
-`:`は、整数の数値ベクトルを昇順または降順に生成する特殊な関数です。例として`1:10`や`10:1`をお試しください。詳細は[「ベクトルの生成」セクション](23-starting-with-r.Rmd#sec:genvec)を参照してください。
+`:` est une fonction spéciale qui crée des vecteurs numériques d'entiers en ordre croissant ou décroissant ; voyez par exemple `1:10` et `10:1`. Consultez la section  [Génération de vecteurs](23-starting-with-r.Rmd#sec:genvec)  pour plus de détails.
 
-また、「`-`」記号を使用して、データフレームの特定のインデックスを除外することもできます。
+Vous pouvez également exclure certains indices d'un tableau de données en utilisant le signe « `-` » :
 
 ```{r, eval=FALSE, purl=TRUE}
 rna[, -1]          ## The whole data frame, except the first column
 rna[-c(7:66465), ] ## Equivalent to head(rna)
 ```
 
-データフレームは、インデックスを指定する（前述の通り）ほか、列名を直接指定することでもサブセットを抽出できます。
+On peut extraire des sous-ensembles de tableaux de données en utilisant des indices (comme illustré précédemment), mais aussi directement les noms des colonnes :
 
 ```{r, eval=FALSE, purl=TRUE}
 rna["gene"]       # Result is a data.frame
@@ -196,31 +196,31 @@ rna[["gene"]]     # Result is a vector
 rna$gene          # Result is a vector
 ```
 
-RStudioでは、自動補完機能を使って、列の正式名称を正しく取得できます。
+Dans RStudio, vous pouvez utiliser la fonctionnalité d'autocomplétion pour obtenir les noms complets et corrects des colonnes.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## 課題
+## Défi
 
-1. `rna`データセットの200行目のデータのみを含む`data.frame` (`rna_200`)を作成してください。
+1. Créez un `data.frame` (`rna_200`) contenant uniquement les données de la ligne 200 du jeu de données `rna`.
 
-2. `nrow()` が `data.frame` の行数を返したことに注目してください。
+2. Remarquez comment `nrow()` vous a donné le nombre de lignes dans un `data.frame` ?
 
-- その数値を使って、初期の `rna` データフレームから最後の行だけを抽出してください。
+- Utilisez ce nombre pour extraire uniquement cette dernière ligne du tableau de données initial `rna`.
 
-- それを`tail()`を用いて最終行として表示されている内容と比較し、想定通りになっているか確認してください。
+- Comparez cela avec ce que vous voyez comme la dernière ligne à l'aide de `tail()` pour vous assurer que cela correspond aux attentes.
 
-- 行番号の代わりに `nrow()` を使用して、最後の行を抽出してください。
+- Extrayez cette dernière ligne en utilisant `nrow()` au lieu du numéro de ligne.
 
-- その最終行から新しいデータフレーム（`rna_last`）を作成します。
+- Créez un nouveau tableau de données (`rna_last`) à partir de cette dernière ligne.
 
-3. `nrow()`を使用して、`rna`データフレームの中央にある行を抽出してください。この行の内容を`rna_middle`という名前のオブジェクトに格納してください。
+3. Utilisez `nrow()` pour extraire la ligne située au milieu du tableau de données `rna`. Stockez le contenu de cette ligne dans un objet nommé `rna_middle`.
 
-4. `nrow()`を上記の`-`表記と組み合わせ、rnaデータセットの1行目から6行目のみを保持した状態で`head(rna)`の動作を再現してください。
+4. Combinez `nrow()` avec la notation `-` ci-dessus pour reproduire le comportement de `head(rna)`, en ne gardant que les premières 6 lignes du jeu de données rna.
 
 :::::::::::::::  solution
 
-## 解答
+## Solution
 
 ```{r, purl=TRUE}
 ## 1.
@@ -239,24 +239,24 @@ rna_head <- rna[-(7:n_rows), ]
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## 因子
+## Facteurs
 
-因子は**カテゴリカルデータ**を表します。これらはラベルに紐付けられた整数として格納され、順序付きまたは順序なしのいずれかとなります。因子は見た目（および多くの場合の挙動）は文字ベクトルのようですが、実際にはRでは整数ベクトルとして扱われます。そのため、文字列として扱う際には十分な注意が必要です。
+Les facteurs représentent des **données catégorielles**. Ils sont stockés sous forme d'entiers associés à des étiquettes et peuvent être ordonnés ou non. Bien que les facteurs ressemblent (et se comportent souvent) à des vecteurs de caractères, ils sont en réalité traités comme des vecteurs entiers par R. Il faut donc être très prudent lorsque l'on les traite comme des chaînes de caractères.
 
-一度作成されると、因子には*水準*と呼ばれるあらかじめ定義された値の集合しか含めることができません。デフォルトでは、Rは常に水準をアルファベット順に並べ替えます。例えば、2つの水準を持つ因子がある場合：
+Une fois créés, les facteurs ne peuvent contenir qu'un ensemble prédéfini de valeurs, appelées *niveaux*. Par défaut, R trie toujours les niveaux par ordre alphabétique. Par exemple, si vous avez un facteur avec 2 niveaux :
 
 ```{r, purl=TRUE}
 sex <- factor(c("male", "female", "female", "male", "female"))
 ```
 
-Rは、レベル`"female"`に`1`を、レベル`"male"`に`2`を割り当てます（このベクトルの最初の要素は`"male"`ですが、`f`が`m`より前にあるためです）。これは関数`levels()`を使用することで確認でき、レベル数は`nlevels()`で調べることができます：
+R attribuera `1` au niveau `"female"` et `2` au niveau `"male"` (car `f` précède `m`, même si le premier élément de ce vecteur est `"male"`). Vous pouvez vérifier cela en utilisant la fonction `levels()` et vous pouvez trouver le nombre de niveaux à l'aide de `nlevels()` :
 
 ```{r, purl=TRUE}
 levels(sex)
 nlevels(sex)
 ```
 
-因子の順序が重要でない場合もあれば、意味があるため（例：「低」、「中」、「高」）、可視化を向上させるため、あるいは特定の種類の解析で必要であるため、順序を指定したい場合もあります。ここでは、`sex` ベクトル内のレベルを並べ替える一つの方法を以下に示します。
+Parfois, l'ordre des facteurs n'a aucune importance ; d'autres fois, vous souhaiterez peut-être en spécifier l'ordre car celui-ci a un sens (par ex. « low », « medium », « high »), car il améliore votre visualisation ou parce qu'il est requis par un type d'analyse particulier. Ici, l'un des moyens de réordonner nos niveaux dans le vecteur `sex` serait :
 
 ```{r, purl=TRUE}
 sex ## current order
@@ -264,37 +264,37 @@ sex <- factor(sex, levels = c("male", "female"))
 sex ## after re-ordering
 ```
 
-Rのメモリ上では、これらの因子は整数（1, 2, 3）で表現されますが、因子は自己記述的であるため、整数よりも多くの情報を含んでいます。`"female"`や`"male"`は、`1`や`2`よりも記述的です。どれが「オス」なのでしょうか。整数データだけでは判断できません。一方、因子はこの情報が組み込まれています。これは、レベル数が多い場合（本例のデータセットにおける遺伝子バイオタイプなど）に特に有用です。
+Dans la mémoire de R, ces facteurs sont représentés par des entiers (1, 2, 3), mais ils sont plus informatifs que les entiers car les facteurs sont auto-descriptifs : `"female"`, `"male"` est plus descriptif que `1`, `2`. Lequel est « mâle » ? Vous ne pourriez pas le déterminer uniquement à partir des données entières. Les facteurs, en revanche, intègrent cette information. Cela est particulièrement utile lorsqu'il y a de nombreux niveaux (comme le biotype génique dans notre jeu de données d'exemple).
 
-データが因子として格納されている場合、`plot()`関数を使えば、各因子水準に含まれる観測数を一目で確認できます。それでは、データ内のオスとメスの数を見てみましょう。
+Lorsque vos données sont stockées sous forme de facteur, vous pouvez utiliser la fonction `plot()` pour obtenir un aperçu rapide du nombre d'observations représentées par chaque niveau de facteur. Examinons le nombre de mâles et de femelles dans nos données.
 
 ```{r firstfactorplot, fig.cap="Bar plot of the number of females and males.", purl=TRUE, fig.alt="Barplot showing the number of 'male' and 'female' occurrences."}
 plot(sex)
 ```
 
-### 文字列への変換
+### Conversion en chaîne de caractères
 
-因子を文字ベクトルに変換するには、`as.character(x)`を使用します。
+Si vous devez convertir un facteur en vecteur de caractères, vous utilisez `as.character(x)`.
 
 ```{r, purl=TRUE}
 as.character(sex)
 ```
 
-<!-- ### 数値因子 -->
+<!-- ### Facteurs numériques -->
 
-<!-- 水準が数値（濃度レベルや年など）で表される因子を数値ベ -->
+<!-- Convertir des facteurs dont les niveaux apparaissent sous forme de -->
 
-<!-- クトルに変換するのは、少々手間がかかります。`as.numeric()` -->
+<!-- nombres (comme des niveaux de concentration ou des années) en vecteur -->
 
-<!-- 関数は因子の水準ではなくインデックス値を返すため、 -->
+<!-- numérique est un peu plus complexe. La fonction `as.numeric()` renvoie les valeurs -->
 
-<!-- 結果として全く別の（この場合は不要な）数値セットが生成さ -->
+<!-- d'index du facteur, et non ses niveaux, ce qui donnera un ensemble de -->
 
-<!-- れてしまいます。これを避ける一つの方法は、 -->
+<!-- nombres entièrement nouveau (et indésirable dans ce cas). Une méthode -->
 
-<!-- 因子を文字列に変換してから数値に変換することです。もう一つの方法は、 -->
+<!-- pour éviter cela consiste à convertir les facteurs en caractères, puis en -->
 
-<!-- `levels()` 関数を使用することです。以下で比較してみましょう： -->
+<!-- nombres. Une autre méthode consiste à utiliser la fonction `levels()`. Comparez : -->
 
 <!-- ```{r} -->
 
@@ -308,19 +308,19 @@ as.character(sex)
 
 <!-- ```
 
-<!-- `levels()`方式では、3つの重要なステップが行われる点にご留意ください。 -->
+<!-- Notez que dans l'approche `levels()`, trois étapes importantes sont effectuées : -->
 
-<!-- * `levels(year_fct)`を用いてすべての因子水準を取得します。 -->
+<!-- * Nous obtenons tous les niveaux du facteur à l'aide de `levels(year_fct)` -->
 
-<!-- * これらのレベルを`as.numeric(levels(year_fct))`を用いて数値に変換します。 -->
+<!-- * Nous convertissons ces niveaux en valeurs numériques à l'aide de `as.numeric(levels(year_fct))` -->
 
-<!-- * 次に、角括弧内のベクトル `year_fct` の基となる整 -->
+<!-- * Nous accédons ensuite à ces valeurs numériques à l'aide des -->
 
-<!--   数を用いて、これらの数値にアクセスします。 -->
+<!--   entiers sous-jacents du vecteur `year_fct` à l'intérieur des crochets -->
 
-### 因子の名称変更
+### Renommage des facteurs
 
-これらの因子の名前を変更したい場合は、その水準を変更するだけで十分です。
+Si nous souhaitons renommer ce facteur, il suffit de modifier ses niveaux :
 
 ```{r, purl=TRUE, fig.alt="Barplot showing the number of 'M' and 'F' occurrences."}
 levels(sex)
@@ -331,13 +331,13 @@ plot(sex)
 
 ::::::::::::::::::::::::::::::::::::::  challenge
 
-## 課題：
+## Défi :
 
-- 「F」と「M」をそれぞれ「Female」と「Male」にリネームしてください。
+- Remplacez « F » et « M » par « Female » et « Male » respectivement.
 
 :::::::::::::::  solution
 
-## 解答
+## Solution
 
 ```{r, eval=TRUE, purl=TRUE}
 levels(sex)
@@ -350,9 +350,9 @@ levels(sex) <- c("Male", "Female")
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## 課題：
+## Défi :
 
-`read.csv()` を使用してデータフレームを作成する方法を見てきましたが、`data.frame()` 関数を使って手動で作成することも可能です。この手作業で作成した `data.frame` には、いくつか間違いがあります。それらを見つけて修正できるでしょうか？ぜひ自由に試してみてください！
+Nous avons vu comment créer des tableaux de données en utilisant `read.csv()`, mais ils peuvent également être créés manuellement avec la fonction `data.frame()`. Il y a quelques erreurs dans ce `data.frame` conçu à la main. Pouvez-vous les repérer et les corriger ? N'hésitez pas à expérimenter !
 
 ```{r, eval=FALSE}
 animal_data <- data.frame(
@@ -363,11 +363,11 @@ animal_data <- data.frame(
 
 :::::::::::::::  solution
 
-## 解答
+## Solution
 
-- 動物名の引用符の欠落
-- 「feel」列に1件の欠損があります（おそらく毛のある動物のいずれかのものと思われます）。
-- weight列のカンマが1つ抜けています
+- absence de guillemets autour des noms des animaux
+- une entrée manquante dans la colonne « feel » (probablement pour l'un des animaux à poils)
+- une virgule manquante dans la colonne du poids
 
 :::::::::::::::::::::::::
 
@@ -375,15 +375,15 @@ animal_data <- data.frame(
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## 課題：
+## Défi :
 
-以下の例の各列のクラスを予測できますか？
+Pouvez-vous prédire la classe de chacune des colonnes dans l'exemple suivant ?
 
-`str(country_climate)`を使って予想を確認してください。
+Vérifiez vos conjectures à l'aide de `str(country_climate)` :
 
-- 期待通りでしたか？ なぜですか？ なぜそうではないのでしょうか？
+- Sont-elles ce que vous attendiez ? Pourquoi ? Pourquoi pas ?
 
-- データフレームを作成する際、最後の変数の後に `stringsAsFactors = TRUE` を追加して再度試してみてください。今度はどうなりますか？ `read.csv()` を使用してテキスト形式のスプレッドシートを R に読み込む際にも、`stringsAsFactors` を設定できます。
+- Réessayez en ajoutant `stringsAsFactors = TRUE` après la dernière variable lors de la création du tableau de données. Que se passe-t-il maintenant ? `stringsAsFactors` peut également être défini lors de la lecture de feuilles de calcul textuelles dans R à l'aide de `read.csv()`.
 
 ```{r, eval=FALSE, purl=TRUE}
 country_climate <- data.frame(
@@ -397,7 +397,7 @@ country_climate <- data.frame(
 
 :::::::::::::::  solution
 
-## 解答
+## Solution
 
 ```{r, eval=TRUE, purl=TRUE}
 country_climate <- data.frame(
@@ -414,32 +414,32 @@ str(country_climate)
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-データ型の自動変換は、便利な場合もあれば、厄介な場合もあります。この機能が存在することを認識し、ルールを把握した上で、Rにインポートしたデータがデータフレーム内で正しい型になっているかを再確認してください。もしそうでない場合は、それを活用して、データ入力時に混入した可能性のある誤り（例えば、数値のみであるべき列に文字が入っているなど）を検出してください。
+La conversion automatique du type de données est parfois une chance, parfois une source de frustration. Sachez qu'elle existe, apprenez les règles et vérifiez à nouveau que les données que vous importez dans R sont du type correct au sein de votre tableau de données. Si ce n'est pas le cas, utilisez-la à votre avantage pour détecter des erreurs qui auraient pu être introduites lors de la saisie des données (par exemple, une lettre dans une colonne qui ne devrait contenir que des nombres).
 
-詳細については、こちらの[RStudioチュートリアル](https://support.rstudio.com/hc/en-us/articles/218611977-Importing-Data-with-RStudio)をご覧ください。
+En savoir plus dans ce [tutoriel RStudio](https://support.rstudio.com/hc/en-us/articles/218611977-Importing-Data-with-RStudio)
 
-## 行列
+## Matrices
 
-先に進む前に、データフレームについて学んだところで、パッケージのインストールについて復習し、新しいデータ型である`matrix`について学びましょう。`data.frame`と同様に、行列には行と列という2つの次元があります。しかし、大きな違いは、`matrix`のすべてのセルが`numeric`、`character`、`logical`...といった同一の型でなければならない点です。その点において、行列は`data.frame`よりも`vector`に近いと言えます。
+Avant de poursuivre, maintenant que nous avons découvert les tableaux de données, rappelons l'installation des packages et apprenons un nouveau type de données, à savoir le `matrix`. Comme le `data.frame`, une matrice possède deux dimensions : des lignes et des colonnes. Mais la différence majeure est que toutes les cellules d'une `matrix` doivent être du même type : `numeric`, `character`, `logical`, ... À cet égard, les matrices sont plus proches d'un `vector` que d'un `data.frame`.
 
-行列のデフォルトコンストラクタは`matrix`です。行列に格納する値のベクトルと、行数および/または列数[^ncol]を指定します。値は、以下に示すように列方向に配置されます。
+Le constructeur par défaut pour une matrice est `matrix`. Il prend un vecteur de valeurs pour remplir la matrice ainsi que le nombre de lignes et/ou de colonnes[^ncol]. Les valeurs sont disposées colonne par colonne, comme illustré ci-dessous.
 
 ```{r mat1, purl=TRUE}
 m <- matrix(1:9, ncol = 3, nrow = 3)
 m
 ```
 
-[^ncol]: 値の長さからもう一方を導き出せるため、行数か列数のどちらか一方があれば十分です。値と行数・列数が整合しない場合にどうなるか試してみてください。
+[^ncol]: Le nombre de lignes ou de colonnes suffit, car l'autre peut être déduit de la longueur des valeurs. Essayez de voir ce qui se passe si les valeurs et le nombre de lignes/colonnes ne correspondent pas.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## 課題：
+## Défi :
 
-関数 `installed.packages()` を使用して、現在コンピュータにインストールされているすべてのパッケージの情報を含む `character` 行列を作成してください。その内容を確認してください。
+À l'aide de la fonction `installed.packages()`, créez une matrice `character` contenant les informations sur tous les packages actuellement installés sur votre ordinateur. Analysez-la.
 
 :::::::::::::::  solution
 
-## 解答：
+## Solution :
 
 ```{r pkg_sln, eval=FALSE, purl=TRUE}
 ## create the matrix
@@ -458,17 +458,17 @@ colnames(ip)
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-テストデータとして、大規模なランダムデータ行列を作成することが有用な場合が多くあります。以下の演習では、平均0、標準偏差1の正規分布から抽出したランダムデータを用いて、このような行列を作成することが求められます。これは`rnorm()`関数で実現可能です。
+Il est souvent utile de créer de grandes matrices de données aléatoires pour servir de données de test. L'exercice ci-dessous vous demande de créer une telle matrice avec des données aléatoires tirées d'une distribution normale de moyenne 0 et d'écart-type 1, ce qui peut être réalisé avec la fonction `rnorm()`.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## 課題：
+## Défi :
 
-正規分布に従うデータ（平均0、標準偏差1）の1000×3の行列を作成してください。
+Construisez une matrice de 1000 lignes et 3 colonnes contenant des données suivant une loi normale de moyenne 0 et d'écart-type 1.
 
 :::::::::::::::  solution
 
-## 解答
+## Solution
 
 ```{r rnormmat_sln, purl=TRUE}
 set.seed(123)
@@ -481,36 +481,36 @@ head(m)
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## 日付の書式設定
+## Mise en forme des dates
 
-Rの初心者（そして経験豊富な方！）がよく直面する問題の一つに、日付や時刻の情報を、解析で適切かつ利用可能な変数に変換することがあります。
+L'un des problèmes les plus fréquents rencontrés par les nouveaux utilisateurs de R (ainsi que par les utilisateurs expérimentés !) est la conversion des informations de date et d'heure en une variable appropriée et utilisable lors des analyses.
 
-### スプレッドシートソフトにおける日付に関する注意点
+### Note sur les dates dans les logiciels de feuilles de calcul
 
-スプレッドシートにおける日付は、一般的に単一の列に格納されます。これは日付を記録する上で最も自然な方法に思えますが、実際にはベストプラクティスではありません。スプレッドシートアプリケーションは（人間の目には）一見正しく日付を表示しますが、実際の処理や保存方法に問題がある場合があります。日付を「年」「月」「日」の別々の列に、あるいは「年」と「年内日数」の別々の列に格納する方が、はるかに安全なことが多いです。
+Les dates dans les feuilles de calcul sont généralement stockées dans une seule colonne. Bien que cela semble être la manière la plus naturelle de consigner les dates, il ne s'agit en réalité pas d'une bonne pratique. Une application de feuille de calcul affichera les dates d'une manière apparemment correcte (pour un observateur humain), mais la façon dont elle gère et stocke réellement les dates peut s'avérer problématique. Il est souvent bien plus sûr de stocker les dates avec l'ANNÉE, le MOIS et le JOUR dans des colonnes distinctes, ou sous la forme d'ANNÉE et de JOUR DE L'ANNÉE dans des colonnes distinctes.
 
-LibreOffice、Microsoft Excel、OpenOffice、Gnumericなどのスプレッドシートソフトでは、日付のエンコード方式が異なり（多くの場合、互換性がありません）、（同一ソフトであってもバージョンやOSによって異なります）。さらに、Excelでは[日付ではないものを日付に変換](https://nsaunders.wordpress.com/2012/10/22/gene-name-errors-and-excel-lessons-not-learned/)することがあります（ @Zeeberg:2004 ）。例えば、MAR1、DEC1、OCT4といった名称や識別子などが該当します。そのため、全体的に日付形式を避けることで、こうした問題を特定しやすくなります。
+Les logiciels de feuilles de calcul tels que LibreOffice, Microsoft Excel, OpenOffice, Gnumeric, ... utilisent des méthodes d'encodage des dates différentes (et souvent incompatibles) (même au sein d'un même logiciel entre les versions et les systèmes d'exploitation). De plus, Excel peut [convertir des éléments qui ne sont pas des dates en dates](https://nsaunders.wordpress.com/2012/10/22/gene-name-errors-and-excel-lessons-not-learned/) ( @Zeeberg:2004 ), par exemple des noms ou des identifiants tels que MAR1, DEC1, OCT4. Ainsi, si vous évitez globalement le format de date, il est plus facile d'identifier ces problèmes.
 
-Data Carpentryのレッスンの[日付をデータとして扱う](https://datacarpentry.org/spreadsheet-ecology-lesson/03-dates-as-data/index.html)セクションでは、スプレッドシートで日付を扱う際の落とし穴について、さらなる知見を提供しています。
+La section [Dates as data](https://datacarpentry.org/spreadsheet-ecology-lesson/03-dates-as-data/index.html) de la leçon Data Carpentry apporte des informations complémentaires sur les pièges liés aux dates dans les feuilles de calcul.
 
-**`lubridate`** パッケージ（**`tidyverse`** に属します。詳細は [tidyverse のウェブサイト](https://www.tidyverse.org/) をご覧ください）の `ymd()` 関数を使用します。**`lubridate`** は **`tidyverse`** のインストール時に併せてインストールされます。**`tidyverse`** (`library(tidyverse)`) を読み込むと、コアパッケージ（ほとんどのデータ分析で使用されるパッケージ）が読み込まれます。ただし、**`lubridate`** は tidyverse のコアパッケージではないため、`library(lubridate)` で明示的に読み込む必要があります。
+Nous allons utiliser la fonction `ymd()` du package **`lubridate`** (qui appartient au **`tidyverse`** ; en savoir plus sur le [site web de tidyverse](https://www.tidyverse.org/)). **`lubridate`** est installé dans le cadre de l'installation de **`tidyverse`**. Lorsque vous chargez **`tidyverse`** (`library(tidyverse)`), les packages principaux (les packages utilisés dans la plupart des analyses de données) sont chargés. **`lubridate`** ne fait cependant pas partie du tidyverse principal, vous devez donc le charger explicitement avec `library(lubridate)`.
 
-まず、必要なパッケージを読み込みます。
+Commencez par charger le package requis :
 
 ```{r loadlibridate, message=FALSE, purl=TRUE}
 library("lubridate")
 ```
 
-`ymd()`は、年・月・日を表すベクトルを受け取り、それを`Date`ベクトルに変換します。`Date`は、Rが日付として認識し、それに応じた操作が可能なデータ型です。関数が指定する引数は柔軟ですが、ベストプラクティスとしては、「YYYY-MM-DD」形式の文字列ベクトルを指定します。
+`ymd()` prend en entrée un vecteur représentant l'année, le mois et le jour, et le convertit en vecteur `Date`. `Date` est une classe de données reconnue par R comme étant une date et peut être manipulée en tant que telle. L'argument requis par la fonction est flexible, mais, selon les bonnes pratiques, il s'agit d'un vecteur de caractères formaté sous la forme « YYYY-MM-DD ».
 
-日付オブジェクトを作成して、その構造を確認してみましょう。
+Créons un objet date et examinons sa structure :
 
 ```{r, purl=TRUE}
 my_date <- ymd("2015-01-01")
 str(my_date)
 ```
 
-それでは、年、月、日をそれぞれ個別に結合してみましょう。結果は同じになります：
+Concaténons maintenant l'année, le mois et le jour fournis séparément : nous obtenons le même résultat.
 
 ```{r, purl=TRUE}
 # sep indicates the character to use to separate each component
@@ -518,7 +518,7 @@ my_date <- ymd(paste("2015", "1", "1", sep = "-"))
 str(my_date)
 ```
 
-それでは、典型的なデータ操作のパイプラインについて見ていきましょう。以下の小規模なデータセットでは、日付がそれぞれ異なる`year`、`month`、`day`列に格納されています。
+Familiarisons-nous maintenant avec un pipeline typique de manipulation de dates. Le petit jeu de données ci-dessous contient des dates stockées dans des colonnes distinctes `year`, `month` et `day`.
 
 ```{r, purl=TRUE}
 x <- data.frame(year = c(1996, 1992, 1987, 1986, 2000, 1990, 2002, 1994, 1997, 1985),
@@ -528,54 +528,54 @@ x <- data.frame(year = c(1996, 1992, 1987, 1986, 2000, 1990, 2002, 1994, 1997, 1
 x
 ```
 
-次に、この関数を`x`データセットに適用します。まず、`paste()`を用いて`x`の`year`、`month`、`day`列から文字ベクトルを作成します。
+Nous appliquons maintenant cette fonction au jeu de données `x`. Nous créons d'abord un vecteur de caractères à partir des colonnes `year`, `month` et `day` de `x` en utilisant `paste()` :
 
 ```{r, purl=TRUE}
 paste(x$year, x$month, x$day, sep = "-")
 ```
 
-この文字ベクトルは、`ymd()`の引数として使用できます。
+Ce vecteur de caractères peut être utilisé comme argument pour `ymd()` :
 
 ```{r, purl=TRUE}
 ymd(paste(x$year, x$month, x$day, sep = "-"))
 ```
 
-得られた`Date`ベクトルは、`x`に`date`という新しい列として追加できます。
+Le vecteur `Date` obtenu peut être ajouté à `x` sous la forme d'une nouvelle colonne appelée `date` :
 
 ```{r, purl=TRUE}
 x$date <- ymd(paste(x$year, x$month, x$day, sep = "-"))
 str(x) # notice the new column, with 'date' as the class
 ```
 
-すべて正しく動作したか確認しましょう。新しい列を確認する方法の一つは、`summary()`を使用することです。
+Vérifions que tout a bien fonctionné. L'un des moyens d'examiner la nouvelle colonne est d'utiliser `summary()` :
 
 ```{r, purl=TRUE}
 summary(x$date)
 ```
 
-なお、`ymd()`では年、月、日の順で指定する必要があります。例えば、日、月、年の順で指定する場合は、`dmy()`を使用する必要があります。
+Notez que `ymd()` attend l'année, le mois et le jour, dans cet ordre. Si vous avez, par exemple, le jour, le mois et l'année, vous aurez besoin de `dmy()`.
 
 ```{r, purl=TRUE}
 dmy(paste(x$day, x$month, x$year, sep = "-"))
 ```
 
-`lubdridate`には、あらゆる日付のバリエーションに対応するための関数が数多く用意されています。
+`lubdridate` dispose de nombreuses fonctions pour gérer toutes les variations de dates.
 
-## Rオブジェクトの概要
+## Résumé des objets R
 
-これまでに、次元数や、単一または複数のデータ型を格納できるかどうかが異なる、いくつかの種類のRオブジェクトを見てきました。
+Jusqu'à présent, nous avons vu plusieurs types d'objets R, différant par le nombre de dimensions et par le fait qu'ils pouvaient stocker un seul ou plusieurs types de données :
 
-- **`vector`**: 1次元（長さがあります）、単一のデータ型です。
-- **`matrix`**: 2次元、単一種類のデータ。
-- **`data.frame`**: 2次元、1列につき1種類。
+- **`vector`** : une dimension (une longueur), un seul type de données.
+- **`matrix`** : deux dimensions, un seul type de données.
+- **`data.frame`** : deux dimensions, un type par colonne.
 
-## リスト
+## Listes
 
-まだ取り上げていませんが、知っておくと便利で、先ほどのまとめから導き出されるデータ型は、リストです。
+Les listes sont un type de données que nous n'avons pas encore vu, mais qu'il est utile de connaître et qui complète le résumé que nous venons de voir :
 
-- **`list`**: 1次元で、各要素は異なるデータ型を持つことができます。
+- **`list`** : une dimension, chaque élément peut être d'un type de données différent.
 
-以下に、数値、文字列、行列、データフレーム、および別のリストを含むリストを作成してみましょう。
+Ci-dessous, créons une liste contenant un vecteur de nombres, des caractères, une matrice, un tableau de données et une autre liste :
 
 ```{r list0, purl=TRUE}
 l <- list(1:10, ## numeric
@@ -587,7 +587,7 @@ length(l)
 str(l)
 ```
 
-リストの部分抽出には、新しいサブリストを作成する場合は`[]`を、そのリストから単一の要素を抽出する場合は`[[]]`（リストに名前が付いている場合はインデックスまたは名前を使用）を使用します。
+La sous-sélection de listes s'effectue à l'aide de `[]` pour créer une nouvelle sous-liste ou de `[[]]` pour extraire un seul élément de cette liste (en utilisant des indices ou des noms, si la liste est nommée).
 
 ```{r, purl=TRUE}
 l[[1]] ## first element
@@ -595,18 +595,18 @@ l[1:2] ## a list of length 2
 l[1]   ## a list of length 1
 ```
 
-## 表形式データのエクスポートと保存 {#sec:exportandsave}
+## Exportation et sauvegarde de données tabulaires {#sec:exportandsave}
 
-`read.table`系の関数を用いて、テキスト形式のスプレッドシートをRに読み込む方法を確認しました。`data.frame`をテキスト形式のスプレッドシートにエクスポートするには、`write.table`系の関数（`write.csv`、`write.delim`、...）を使用します。これらの関数はいずれも、エクスポート対象の変数とエクスポート先のファイルを引数として取ります。例えば、`rna`のデータを`data_output`ディレクトリ内の`my_rna.csv`ファイルにエクスポートするには、次のように実行します。
+Nous avons vu comment importer une feuille de calcul textuelle dans R à l'aide de la famille de fonctions `read.table`. Pour exporter un `data.frame` vers une feuille de calcul textuelle, nous pouvons utiliser l'ensemble de fonctions `write.table` (`write.csv`, `write.delim`, ...). Elles prennent toutes en argument la variable à exporter et le fichier de destination. Par exemple, pour exporter les données `rna` vers le fichier `my_rna.csv` dans le répertoire `data_output`, nous exécuterions :
 
 ```{r writecsv, eval=FALSE, purl=TRUE}
 write.csv(rna, file = "data_output/my_rna.csv")
 ```
 
-この新しいCSVファイルは、Rに慣れていない他の共同研究者とも共有できるようになりました。なお、`data.frame`の一部のフィールドにはカンマが含まれていますが（例えば「product」列を参照）、Rはデフォルトで各フィールドを引用符で囲むため、列区切りにカンマを使用していても、正しくRに読み込むことができます。
+Ce nouveau fichier CSV peut désormais être partagé avec d'autres collaborateurs qui ne maîtrisent pas R. Notez que, bien qu'il y ait des virgules dans certains champs du `data.frame` (voir par exemple la colonne « product »), R entourera par défaut chaque champ de guillemets, et nous pourrons donc le lire correctement dans R, malgré l'utilisation également de virgules comme séparateurs de colonnes.
 
 :::::::::::::::::::::::::::::::::::::::: keypoints
 
-- Rにおける表形式データ
+- Données tabulaires dans R
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::

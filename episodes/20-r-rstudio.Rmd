@@ -1,6 +1,6 @@
 ---
 source: Rmd
-title: "RとRStudio"
+title: "R et RStudio"
 teaching: 30
 exercises: 0
 ---
@@ -10,186 +10,186 @@ exercises: 0
 
 ::::::::::::::::::::::::::::::::::::::: objectives
 
-- RStudioのスクリプト、コンソール、環境、プロットの各ペインの目的について説明してください。
-- 一連の解析のためのファイルとディレクトリをRプロジェクトとして整理し、作業ディレクトリの目的を理解します。
-- Rの関数に関する詳細情報を調べるには、RStudio内蔵のヘルプインターフェースをご利用ください。
-- Rユーザーコミュニティでトラブルシューティングを行う際に、十分な情報を提供する方法を説明します。
+- Décrivez le rôle des panneaux Script, Console, Environment et Plots de RStudio.
+- Organiser les fichiers et les répertoires pour un ensemble d'analyses sous la forme d'un projet R, et comprendre l'utilité du répertoire de travail.
+- Utilisez l'interface d'aide intégrée à RStudio pour rechercher plus d'informations sur les fonctions R.
+- Démontrer comment fournir suffisamment d'informations pour dépanner auprès de la communauté d'utilisateurs de R.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::::: questions
 
-- RとRStudioとは何ですか？
+- Qu'est-ce que R et RStudio ?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-> このエピソードは、Data Carpentriesの*「生態学者のためのRによるデータ分析と可視化」*レッスンに基づいています。
+> Cet épisode est basé sur la leçon *Data Analysis and Visualisation in R for Ecologists* de Data Carpentries.
 
-## Rとは何ですか？RStudioとは何ですか？
+## Qu'est-ce que R ? Qu'est-ce que RStudio ?
 
-[R](https://www.r-project.org/)という用語は、*プログラミング言語*、*統計計算環境*、およびそれを用いて記述されたスクリプトを解釈する*ソフトウェア*を指して用いられます。
+Le terme [R](https://www.r-project.org/) est utilisé pour désigner le *langage de programmation*, l'*environnement de calcul statistique* et *le logiciel* qui interprète les scripts écrits avec celui-ci.
 
-[RStudio](https://rstudio.com)は現在、Rスクリプトを記述するだけでなく、Rソフトウェアを操作するためにも非常に広く利用されているツールです[^plainr]。正常に動作させるにはRが必要であるため、お使いのコンピュータにRとRStudioの両方がインストールされている必要があります。
+[RStudio](https://rstudio.com) est actuellement un moyen très populaire non seulement d'écrire vos scripts R, mais aussi d'interagir avec le logiciel R[^plainr]. Pour fonctionner correctement, RStudio nécessite R et, par conséquent, les deux doivent être installés sur votre ordinateur.
 
-[^plainr]: コマンドラインコンソールから直接Rを使用する場合とは異なります。Rと連携・統合する他のソフトウェアも存在しますが、RStudioは初心者に特に適している一方で、非常に高度な機能を数多く備えています。
+[^plainr]: Contrairement à l'utilisation de R directement depuis la console de ligne de commande. Il existe d'autres logiciels qui s'interfacent et s'intègrent à R, mais RStudio est particulièrement adapté aux débutants tout en offrant de nombreuses fonctionnalités très avancées.
 
-[RStudio IDEチートシート](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rstudio-ide.pdf)には、ここで扱う内容よりもはるかに多くの情報が記載されていますが、キーボードショートカットを覚えたり、新機能を発見したりするのに役立ちます。
+La [fiche pratique de l'IDE RStudio](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rstudio-ide.pdf) fournit bien plus d'informations que celles qui seront abordées ici, mais peut s'avérer utile pour apprendre les raccourcis clavier et découvrir de nouvelles fonctionnalités.
 
-## なぜRを学ぶのでしょうか？
+## Pourquoi apprendre R ?
 
-### Rはあちこちを指し示したりクリックしたりすることがあまりありません。それは良いことです。
+### R ne nécessite pas beaucoup de clics, et c'est une bonne chose.
 
-他のソフトウェアに比べて習得までのハードルは高いかもしれませんが、Rでは分析結果が一連のポインティング＆クリック操作の記憶に依存せず、一連の記述式コマンドに基づいて得られるという点は大きなメリットです。そのため、さらにデータを収集して分析をやり直したい場合でも、結果を得るためにどのボタンをどの順番でクリックしたかを思い出す必要はありません。単にスクリプトを再実行すればよいのです。
+La courbe d'apprentissage peut être plus abrupte qu'avec d'autres logiciels, mais avec R, les résultats de votre analyse ne dépendent pas du fait de mémoriser une succession de clics, mais plutôt d'une série de commandes écrites, et c'est une bonne chose ! Ainsi, si vous souhaitez refaire votre analyse parce que vous avez collecté davantage de données, vous n'avez pas à vous rappeler quel bouton vous avez cliqué et dans quel ordre pour obtenir vos résultats ; il vous suffit de relancer votre script.
 
-スクリプトを活用することで、分析で用いた手順が明確になります。また、記述したコードを他の人が確認し、フィードバックをくれたりミスを見つけたりすることも可能です。
+Le travail avec des scripts rend les étapes utilisées dans votre analyse claires, et le code que vous écrivez peut être examiné par une autre personne capable de vous fournir des retours et de repérer des erreurs.
 
-スクリプトを活用することで、自身の作業に対する理解を深めることができ、使用する手法の習得や理解も容易になります。
+Le travail avec des scripts vous oblige à avoir une compréhension plus approfondie de ce que vous faites, et facilite votre apprentissage et votre compréhension des méthodes que vous utilisez.
 
-### Rコードは再現性に優れています。
+### Le code R est idéal pour la reproductibilité
 
-再現性とは、同じ解析コードを用いれば、他の誰か（将来の自分を含む）が同じデータセットから同じ結果を得られることを意味します。
+La reproductibilité signifie qu'une autre personne (y compris votre futur soi) peut obtenir les mêmes résultats à partir du même jeu de données en utilisant le même code d'analyse.
 
-Rは他のツールと連携し、コードから原稿やレポートを作成できます。さらにデータを収集したり、データセットの誤りを修正したりすると、原稿やレポート内の図や統計検定が自動的に更新されます。
+R s'intègre à d'autres outils pour générer des manuscrits ou des rapports à partir de votre code. Si vous collectez davantage de données ou corrigez une erreur dans votre jeu de données, les figures et les tests statistiques de votre manuscrit ou de votre rapport sont mis à jour automatiquement.
 
-再現性のある解析を求める学術誌や助成機関が増えており、Rを習得していれば、こうした要件への対応において優位に立つことができます。
+Un nombre croissant de revues et d'organismes de financement exigent que les analyses soient reproductibles ; maîtriser R vous donnera donc un avantage face à ces exigences.
 
-### Rは学際的で拡張性に優れています。
+### R est interdisciplinaire et extensible
 
-機能を拡張するためにインストール可能な10,000以上のパッケージ[^whatarepkgs]を備えたRは、多くの科学分野の統計的手法を組み合わせ、データ解析に必要な分析フレームワークに最適に適合させることができる枠組みを提供しています。例えば、Rには画像解析、GIS、時系列解析、集団遺伝学など、多岐にわたるパッケージが用意されています。
+Avec plus de 10 000 packages[^whatarepkgs] pouvant être installés pour en étendre les capacités, R offre un cadre qui vous permet de combiner des approches statistiques issues de nombreuses disciplines scientifiques afin d'adapter au mieux le cadre analytique nécessaire à l'analyse de vos données. Par exemple, R dispose de packages pour l'analyse d'images, la SIG, les séries temporelles, la génétique des populations, et bien plus encore.
 
-[^whatarepkgs]: すなわち、バイオインフォマティクスのデータ解析など、Rに新たな機能を付与するアドオンのことです。
+[^whatarepkgs]: c'est-à-dire des extensions qui confèrent à R de nouvelles fonctionnalités, telles que l'analyse de données en bioinformatique.
 
 ```{r, fig.cap="Exponential increase of the number of packages available on [CRAN](https://cran.r-project.org/), the Comprehensive R Archive Network. From the R Journal, Volume 10/2, December 2018.", fig.alt="Two graphs showing the exponential increase of the number of CRAN packages from 2000 to 2018. The figure on the right shows linear trend for the log of number of packages.", echo=FALSE, message=FALSE}
 knitr::include_graphics("fig/cran.png")
 ```
 
-### Rはあらゆる形式や規模のデータを扱えます。
+### R fonctionne avec des données de toutes formes et de toutes tailles
 
-Rで習得するスキルは、データセットの規模に応じて容易に応用できます。データセットが数百行であっても数百万行であっても、それほど大きな違いはありません。
+Les compétences que vous acquérez avec R s'adaptent facilement à la taille de votre jeu de données. Que votre jeu de données compte des centaines ou des millions de lignes, cela ne fera pas grande différence pour vous.
 
-Rはデータ分析向けに設計されています。欠損データや統計的因子の取り扱いを容易にする、専用のデータ構造やデータ型を備えています。
+R est conçu pour l'analyse de données. Il dispose de structures de données et de types de données spéciaux qui facilitent la manipulation des données manquantes et des facteurs statistiques.
 
-Rは、お使いのコンピュータ上やウェブ上のスプレッドシート、データベース、その他多くのデータ形式に接続できます。
+R peut se connecter à des feuilles de calcul, à des bases de données et à de nombreux autres formats de données, sur votre ordinateur ou sur le Web.
 
-### Rは高品質なグラフィックスを生成します。
+### R produit des graphiques de haute qualité
 
-Rのプロット機能は多岐にわたっており、グラフのあらゆる要素を調整することで、データから得られる情報を最も効果的に伝えることができます。
+Les fonctionnalités de tracé de R sont vastes et vous permettent d'ajuster tout aspect de votre graphique afin de transmettre le message de vos données de la manière la plus efficace possible.
 
-### Rには大規模で親しみやすいコミュニティがあります。
+### R dispose d'une communauté vaste et accueillante
 
-毎日、数千人もの人々がRを利用しています。その多くは、メーリングリストや[Stack Overflow](https://stackoverflow.com/)などのウェブサイト、あるいは[RStudioコミュニティ](https://community.rstudio.com/)を通じて、快くサポートしてくれます。こうした広範なユーザーコミュニティは、バイオインフォマティクスなどの専門分野にも及んでいます。Rコミュニティのこうした一部を構成するのが[Bioconductor](https://bioconductor.org/)であり、これは「現在および新興の生物学的アッセイによるデータ」の解析と理解を目的とした科学プロジェクトです。本ワークショップはBioconductorコミュニティのメンバーによって開発されました。Bioconductorの詳細については、関連ワークショップである["The Bioconductor Project"](https://carpentries-incubator.github.io/bioc-project/)をご覧ください。
+Des milliers de personnes utilisent R quotidiennement. Beaucoup d'entre elles sont prêtes à vous aider via des listes de diffusion et des sites web tels que [Stack Overflow](https://stackoverflow.com/), ou sur la [communauté RStudio](https://community.rstudio.com/). Ces vastes communautés d'utilisateurs s'étendent à des domaines spécialisés tels que la bioinformatique. L'un de ces sous-ensembles de la communauté R est [Bioconductor](https://bioconductor.org/), un projet scientifique d'analyse et de compréhension « des données issues d'essais biologiques actuels et émergents ». Cet atelier a été développé par des membres de la communauté Bioconductor ; pour plus d'informations sur Bioconductor, veuillez consulter l'atelier complémentaire ["The Bioconductor Project"](https://carpentries-incubator.github.io/bioc-project/).
 
-### Rは無料であるだけでなく、オープンソースでクロスプラットフォームにも対応しています。
+### R est non seulement gratuit, mais il est également open source et multiplateforme.
 
-誰でもソースコードを確認して、Rがどのように動作するかを把握できます。こうした透明性により、ミスが発生する可能性が低くなります。また、あなた（あるいは他の誰か）がミスを見つけた場合は、報告してバグを修正することができます。
+Tout le monde peut examiner le code source pour voir comment R fonctionne. Grâce à cette transparence, les risques d'erreurs sont réduits et, si vous (ou quelqu'un d'autre) en trouvez, il est possible de signaler et de corriger des bugs.
 
-## RStudioの基本操作
+## Se familiariser avec RStudio
 
-まずは、Rを扱うための統合開発環境（IDE）である[RStudio](https://www.rstudio.com/)について学んでいきましょう。
+Commençons par découvrir [RStudio](https://www.rstudio.com/), un environnement de développement intégré (IDE) pour travailler avec R.
 
-オープンソース製品であるRStudio IDEは、[Affero General Public License (AGPL) v3](https://www.gnu.org/licenses/agpl-3.0.en.html)に基づき無料で提供されています。また、RStudio IDEはPosit, Inc.から商用ライセンスおよび優先メールサポート付きで提供されています。
+Le produit open source RStudio IDE est gratuit sous la [Licence publique générale Affero (AGPL) v3](https://www.gnu.org/licenses/agpl-3.0.en.html). RStudio IDE est également disponible avec une licence commerciale et un support par e-mail prioritaire de la part de Posit, Inc.
 
-コードの記述、コンピュータ上のファイルの操作、作成予定の変数の確認、および生成するプロットの可視化には、RStudio IDEを使用します。RStudioは、本ワークショップでは扱わない他の用途（例：バージョン管理、パッケージ開発、Shinyアプリの作成）にも利用できます。
+Nous utiliserons l'IDE RStudio pour écrire du code, naviguer dans les fichiers de notre ordinateur, examiner les variables que nous allons créer et visualiser les graphiques que nous générerons. RStudio peut également être utilisé pour d'autres tâches (par exemple, la gestion des versions, le développement de packages, la création d'applications Shiny) que nous ne traiterons pas durant l'atelier.
 
 ```{r, results="markup", fig.cap="RStudio interface screenshot. Clockwise from top left: Source, Environment/History, Files/Plots/Packages/Help/Viewer, Console.", echo=FALSE, purl=FALSE, out.width="100%", fig.align="center", fig.alt="Screenshot of the RStudio interface showing the typical four panel setup."}
 knitr::include_graphics("fig/rstudio-screenshot.png")
 ```
 
-RStudioのウィンドウは4つの「ペイン」に分かれています。
+La fenêtre de RStudio est divisée en quatre « panneaux » :
 
-- スクリプトやドキュメントの**ソース**（デフォルトレイアウトでは左上）
-- **環境/履歴**（右上）、
-- **Files/Plots/Packages/Help/Viewer**（右下）、および
-- Rの**コンソール**（左下）。
+- la **Source** pour vos scripts et documents (en haut à gauche, dans la disposition par défaut)
+- votre panneau **Environment/History** (environnement/historique, en haut à droite),
+- votre panneau **Files/Plots/Packages/Help/Viewer** (fichiers/graphiques/paquets/aide/visualiseur, en bas à droite), et
+- la **Console** de R (en bas à gauche).
 
-これらのペインの配置や内容はカスタマイズ可能です（メニューの`Tools -> Global Options -> Pane Layout`を参照してください）。
+L'emplacement de ces panneaux et leur contenu peuvent être personnalisés (voir le menu `Tools -> Global Options -> Pane Layout`).
 
-RStudioを利用するメリットの一つは、コードを記述するために必要なすべての情報が一つのウィンドウで確認できる点です。さらに、Rでの開発で使用する主要なファイル形式に対する多くのショートカット、**自動補完**、**ハイライト**機能により、RStudioを使えばより簡単に、かつミスの少ない入力が可能になります。
+L'un des avantages de RStudio est que toutes les informations nécessaires pour écrire du code sont disponibles dans une seule fenêtre. De plus, grâce à de nombreux raccourcis, à l'**autocomplétion** et à la **coloration syntaxique** des principaux types de fichiers utilisés lors du développement en R, RStudio facilite la saisie et réduit les risques d'erreur.
 
-## セットアップ
+## Configuration
 
-関連するデータ、解析、テキストを、**作業ディレクトリ**と呼ばれる単一のフォルダにまとめて管理するのが一般的です。このフォルダ内のすべてのスクリプトでは、プロジェクト内のどこにファイルがあるかを示す**相対パス**を使用できます（特定のコンピュータ上の場所を指す絶対パスとは異なります）。このように管理することで、基盤となるスクリプトが引き続き動作するかどうかを心配することなく、コンピュータ上でプロジェクトを移動させたり、他者と共有したりすることが格段に容易になります。
+Il est recommandé de regrouper un ensemble de données, d'analyses et de textes connexes au sein d'un seul dossier, appelé **répertoire de travail**. Tous les scripts contenus dans ce dossier peuvent alors utiliser des **chemins relatifs** vers les fichiers, indiquant l'emplacement d'un fichier au sein du projet (contrairement aux chemins absolus, qui indiquent l'emplacement d'un fichier sur un ordinateur spécifique). Travailler ainsi permet de déplacer beaucoup plus facilement son projet sur son ordinateur et de le partager avec d'autres sans se soucier de savoir si les scripts sous-jacents fonctionneront toujours.
 
-RStudioでは、「プロジェクト」インターフェースを通じてこれを実現するための便利なツール群が提供されています。この機能は、作業ディレクトリを作成するだけでなく、その場所を記憶し（これにより素早く移動できます）、オプションでカスタム設定や開いているファイルを保持することで、中断後の作業再開を容易にします。以下の手順に従って、このチュートリアル用の「Rプロジェクト」を作成してください。
+RStudio propose un ensemble d'outils utiles pour ce faire via son interface « Projets », qui non seulement crée un répertoire de travail pour vous, mais mémorise également son emplacement (vous permettant de vous y rendre rapidement) et, optionnellement, conserve les paramètres personnalisés et les fichiers ouverts pour faciliter la reprise du travail après une pause. Suivez ci-dessous les étapes pour créer un « Projet R » pour ce tutoriel.
 
-1. RStudioを起動します。
-2. `File`メニューから、`New project`をクリックしてください。`New directory`を選択し、次に`New project`を選択してください。
-3. この新しいフォルダ（または「ディレクトリ」）に名前を入力し、適切な場所を指定してください。これが今回のセッション（またはコース全体）の**作業ディレクトリ**となります（例：`bioc-intro`）。
-4. `Create project`をクリックしてください。
-5. （任意）RStudioの環境設定で、ワークスペースを保存しないよう「Never」に設定してください。
+1. Lancez RStudio.
+2. Dans le menu `File`, cliquez sur `New project`. Choisissez `New directory`, puis `New project`.
+3. Saisissez un nom pour ce nouveau dossier (ou « répertoire ») et choisissez un emplacement pratique. Ce sera votre **répertoire de travail** pour cette session (ou pour l'ensemble du cours) (par ex., `bioc-intro`).
+4. Cliquez sur `Create project`.
+5. (Facultatif) Configurez RStudio pour ne jamais enregistrer l'espace de travail en choisissant l'option « Never » dans les préférences.
 
-RStudioのデフォルト設定は概ね問題なく動作しますが、特に大規模なデータセットを扱う場合、ワークスペースを.RDataに保存するのは手間がかかることがあります。この機能を無効にするには、「ツール」→「グローバルオプション」に進み、「終了時にワークスペースを.RDataに保存」のオプションで「なし」を選択してください。
+Les préférences par défaut de RStudio fonctionnent généralement bien, mais enregistrer l'espace de travail dans un fichier .RData peut s'avérer contraignant, surtout avec des jeux de données volumineux. Pour désactiver cette fonctionnalité, ouvrez Tools --> « Global Options », puis choisissez « Never » pour l'option « Save workspace to .RData on exit ».
 
 ```{r, results="markup", fig.cap="Set 'Save workspace to .RData on exit' to 'Never'", echo=FALSE, purl=FALSE, out.width="70%", fig.align="center", fig.alt="Screenshot of the RStudio General Options panel."}
 knitr::include_graphics("fig/rstudio-preferences.png")
 ```
 
-[Windowsと他のOS間の文字エンコーディングの問題](https://yihui.name/en/2018/11/biggest-regret-knitr/)を避けるため、デフォルトでUTF-8を設定します。
+Afin d'éviter [les problèmes de codage de caractères entre Windows et les autres systèmes d'exploitation](https://yihui.name/en/2018/11/biggest-regret-knitr/), nous allons définir UTF-8 par défaut :
 
 ```{r, results="markup", fig.cap="Set the default text encoding to UTF-8 to save us headache in the coming future. (Figure from the link above).", echo=FALSE, purl=FALSE, out.width="70%", fig.align="center", fig.alt="Screenshot of the RStudio Code Options panel."}
 knitr::include_graphics("fig/utf8.png")
 ```
 
-### 作業ディレクトリの整理
+### Organisation de votre répertoire de travail
 
-プロジェクト間で一貫したフォルダ構成を採用することで、整理された状態を維持でき、将来的にファイルの検索や整理も容易になります。これは、複数のプロジェクトを抱えている場合に特に有用です。一般的には、**スクリプト**、**データ**、**ドキュメント**用のディレクトリ（フォルダ）を作成するとよいでしょう。
+L'utilisation d'une structure de dossiers cohérente à travers vos projets vous aidera à rester organisé et vous permettra également de retrouver et de classer vos éléments plus facilement à l'avenir. Cela peut s'avérer particulièrement utile lorsque vous avez plusieurs projets. En général, vous pouvez créer des répertoires (dossiers) pour les **scripts**, les **données** et les **documents**.
 
-- **`data/`** このフォルダを、生データや、特定の解析のために作成する中間データセットの保存先に使用してください。透明性と[来歴](https://en.wikipedia.org/wiki/Provenance)を確保するため、生データのコピーは*常に*参照可能な状態で保持し、データのクリーニングや前処理は可能な限りプログラム的に（つまり、手動ではなくスクリプトを用いて）行うようにしてください。また、生データと処理済みデータを分離しておくことも推奨されます。例えば、`scripts/01.preprocess.tree_survey.R`スクリプトによって生成された`data/processed/tree.survey.csv`ファイルとは別に、`data/raw/tree_survey.plot1.txt`や`...plot2.txt`といったファイルを保持するといった方法が考えられます。
-- **`documents/`** ここには、アウトラインや下書き、その他のテキストを保存します。
-- **`scripts/`**（または `src`） ここには、各種解析やプロット用のRスクリプトを保存し、場合によっては関数用の別フォルダを設けることになります（これについては後述します）。
+- **`data/`** Utilisez ce dossier pour stocker vos données brutes et les jeux de données intermédiaires que vous pourriez créer pour un analyse particulière. Par souci de transparence et de [provenance](https://en.wikipedia.org/wiki/Provenance), vous devriez *toujours* garder une copie de vos données brutes accessible et effectuer autant que possible le nettoyage et le prétraitement de vos données de manière programmatique (c'est-à-dire via des scripts, plutôt que manuellement). Séparer les données brutes des données traitées est également une bonne idée. Par exemple, vous pourriez conserver les fichiers `data/raw/tree_survey.plot1.txt` et `...plot2.txt` séparément d'un fichier `data/processed/tree.survey.csv` généré par le script `scripts/01.preprocess.tree_survey.R`.
+- **`documents/`** Ce serait un endroit pour conserver des plans, des brouillons et d'autres textes.
+- **`scripts/`** (ou `src`) Ce serait l'emplacement où vous conserveriez vos scripts R pour différentes analyses ou des tracés, et éventuellement un dossier distinct pour vos fonctions (on y reviendra plus tard).
 
-プロジェクトのニーズに応じて、追加のディレクトリやサブディレクトリが必要になる場合もありますが、これらが作業ディレクトリの骨格となるべきです。
+Vous pourriez avoir besoin de répertoires ou de sous-répertoires supplémentaires selon les besoins de votre projet, mais ceux-ci doivent constituer l'ossature de votre répertoire de travail.
 
 ```{r, results="markup", fig.cap="Example of a working directory structure.", echo=FALSE, purl=FALSE, out.width="100%", fig.align="center", fig.alt="Flow diagram showing the structure of the working directory and various directory of a typical RStuio project."}
 knitr::include_graphics("fig/working-directory-structure.png")
 ```
 
-本コースでは、生データを保存するための`data/`フォルダが必要になります。また、データをCSVファイルとしてエクスポートする方法を学ぶ際には`data_output/`を、保存する図には`fig_output/`フォルダを使用します。
+Pour ce cours, nous aurons besoin d'un dossier `data/` pour stocker nos données brutes, et nous utiliserons `data_output/` lorsque nous apprendrons à exporter des données sous forme de fichiers CSV, ainsi que le dossier `fig_output/` pour les figures que nous enregistrerons.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
-## 課題：プロジェクトのディレクトリ構成を作成してください。
+## Défi : créez la structure de votre répertoire de projet
 
-画面右側の`Files`タブで`New Folder`をクリックし、新しく作成した作業ディレクトリ（例：`~/bioc-intro/data`）内に`data`という名前のフォルダを作成してください。（または、Rコンソールで`dir.create("data")`と入力してください。）これらの操作を繰り返し、`data_output/`と`fig_output`のフォルダを作成してください。
+Sous l'onglet `Files` à droite de l'écran, cliquez sur `New Folder` et créez un dossier nommé `data` au sein de votre répertoire de travail nouvellement créé (par ex., `~/bioc-intro/data`). (Alternativement, saisissez `dir.create("data")` dans votre console R.) Répétez ces opérations pour créer des dossiers `data_output/` et `fig_output`.
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-使用するファイルは1つだけですし、その方が手間がかからないため、スクリプトは作業ディレクトリのルートに配置しておきます。
+Nous allons conserver le script à la racine de notre répertoire de travail car nous n'utiliserons qu'un seul fichier, ce qui facilitera les choses.
 
-作業ディレクトリは、現在以下のようになっているはずです。
+Votre répertoire de travail devrait désormais ressembler à ceci :
 
 ```{r, results="markup", fig.cap="How it should look like at the beginning of this lesson", echo=FALSE, purl=FALSE, out.width="100%", fig.align="center", fig.alt="Screenshot of RStudio's Files panel."}
 knitr::include_graphics("fig/r-starting-how-it-should-look-like.png")
 ```
 
-**プロジェクト管理**は、もちろんバイオインフォマティクスのプロジェクトにも適用可能です[^bioindatascience]。William Noble ( @Noble:2009 ) は、次のようなディレクトリ構成を提案しています。
+La **gestion de projet** s'applique également aux projets de bioinformatique, bien entendu[^bioindatascience]. William Noble ( @Noble:2009 ) propose la structure de répertoires suivante :
 
-[^bioindatascience]: 本コースでは、バイオインフォマティクスを、生物学的または生物医学的データに適用されるデータサイエンスとして捉えます。
+[^bioindatascience]: Dans ce cours, nous considérons la bioinformatique comme une science des données appliquée aux données biologiques ou biomédicales.
 
-> ディレクトリ名は大きめの書体で、ファイル名は小さめの書体で表記されています。ここではファイルの一部のみが表示されています。なお、日付は時系列順に並べ替えられるよう`<year>-<month>-<day>`形式で表記されています。ソースコード`src/ms-analysis.c`はコンパイルされて`bin/ms-analysis`が生成され、`doc/ms-analysis.html`にドキュメントが記載されています。データディレクトリ内の`README`ファイルには、誰が、どのURLから、どの日付にデータファイルをダウンロードしたかが指定されています。ドライバスクリプト`results/2009-01-15/runall`は、3つの交差検証分割に対応する3つのサブディレクトリ（split1、split2、split3）を自動的に生成します。`bin/parse-sqt.py`スクリプトは、両方の`runall`ドライバスクリプトから呼び出されます。
+> Les noms de répertoires sont dans une police de caractères grande, et les noms de fichiers dans une police plus petite. Seul un sous-ensemble des fichiers est présenté ici. Notez que les dates sont formatées `<year>-<month>-<day>` afin qu'elles puissent être triées par ordre chronologique. Le code source `src/ms-analysis.c` est compilé pour créer `bin/ms-analysis` et est documenté dans `doc/ms-analysis.html`. Les fichiers `README` dans les répertoires de données précisent qui a téléchargé les fichiers de données depuis quelle URL et à quelle date. Le script pilote `results/2009-01-15/runall` génère automatiquement les trois sous-répertoires split1, split2 et split3, correspondant à trois partitions de validation croisée. Le script `bin/parse-sqt.py` est appelé par les deux scripts pilotes `runall`.
 
 ```{r bioinfoproj, fig.cap="Directory structure for a sample bioinformatics project.", out.width="100%", echo=FALSE, fig.alt="Figure form Nobel et al. (2009) showing a complex bioinformatics project structure."}
 knitr::include_graphics("fig/noble-bioinfo-project.png")
 ```
 
-適切に定義され、十分に文書化されたプロジェクトディレクトリにおいて最も重要な点は、プロジェクトに不慣れな人[^futureself]が
+L'aspect le plus important d'un répertoire de projet bien défini et bien documenté est de permettre à quelqu'un qui ne connaît pas le projet[^futureself] de
 
-1. プロジェクトの内容、利用可能なデータ、実施された解析、および得られた結果を理解し、そして何よりも重要なのが
+1. comprendre de quoi traite le projet, quelles données sont disponibles, quelles analyses ont été réalisées et quels résultats ont été produits et, surtout, de
 
-2. 分析を再度実施します ― 新しいデータを用いるか、あるいは分析パラメータの一部を変更して行います。
+2. répéter l'analyse — avec de nouvelles données, ou en modifiant certains paramètres d'analyse.
 
-[^futureself]: 分析を実行してから数ヶ月、あるいは数年後のあなたの姿が、まさにその姿である可能性があり、また実際にそうなる可能性も非常に高いでしょう。
+[^futureself]: Cette personne pourrait être, et sera très probablement, vous-même dans quelques mois ou quelques années après la réalisation des analyses.
 
-### 作業ディレクトリ
+### Le répertoire de travail
 
-作業ディレクトリは、理解しておくべき重要な概念です。これは、Rがファイルを探し、保存する場所のことです。プロジェクトのコードを記述する際は、作業ディレクトリのルートを基準としてファイルを参照し、この構造内にあるファイルのみを使用するようにしてください。
+Le répertoire de travail est un concept important à comprendre. C'est l'endroit d'où R recherchera et enregistrera les fichiers. Lorsque vous écrivez du code pour votre projet, celui-ci doit faire référence aux fichiers par rapport à la racine de votre répertoire de travail et ne doit référencer que des fichiers situés au sein de cette structure.
 
-RStudioのプロジェクトを利用すれば、この操作は簡単になり、作業ディレクトリも適切に設定されます。確認が必要な場合は、`getwd()`を使用できます。何らかの理由で作業ディレクトリが意図した状態になっていない場合は、RStudioのインターフェースで、作業ディレクトリがあるべき場所のファイルブラウザに移動し、青い歯車アイコン`More`をクリックして`Set As Working Directory`を選択することで、変更できます。あるいは、`setwd("/path/to/working/directory")`を使用して作業ディレクトリをリセットすることも可能です。ただし、この行をスクリプトに含めないでください。他の人のコンピュータでは動作しなくなるためです。
+L'utilisation de projets RStudio facilite cette tâche et garantit que votre répertoire de travail est correctement configuré. Si vous devez le vérifier, vous pouvez utiliser `getwd()`. Si, pour une raison quelconque, votre répertoire de travail ne correspond pas à celui attendu, vous pouvez le modifier dans l'interface de RStudio en vous rendant dans le navigateur de fichiers où se trouve votre répertoire de travail, en cliquant sur l'icône d'engrenage bleue `More`, puis en sélectionnant `Set As Working Directory`. Alternativement, vous pouvez utiliser `setwd("/path/to/working/directory")` pour réinitialiser votre répertoire de travail. Toutefois, vos scripts ne doivent pas contenir cette ligne, car elle échouera sur l'ordinateur de quelqu'un d'autre.
 
-**例**
+**Exemple**
 
-以下のスキーマは、`data`および`fig_output`というサブディレクトリを持つ作業ディレクトリ`bioc-intro`と、後者にある2つのファイルを表しています。
+Le schéma ci-dessous représente le répertoire de travail `bioc-intro` avec les sous-répertoires `data` et `fig_output`, ainsi que 2 fichiers dans ce dernier :
 
 ```
 bioc-intro/data/
@@ -197,93 +197,93 @@ bioc-intro/data/
           /fig_output/fig2.png
 ```
 
-作業ディレクトリにいる場合は、相対パス `bioc-intro/fig_output/fig1.pdf` または絶対パス `/home/user/bioc-intro/fig_output/fig1.pdf` を用いて `fig1.pdf` ファイルを参照できます。
+Si nous étions dans le répertoire de travail, nous pourrions référencer le fichier `fig1.pdf` à l'aide du chemin relatif `bioc-intro/fig_output/fig1.pdf` ou du chemin absolu `/home/user/bioc-intro/fig_output/fig1.pdf`.
 
-`data`ディレクトリにいる場合は、相対パス`../fig_output/fig1.pdf`または同じ絶対パス`/home/user/bioc-intro/fig_output/fig1.pdf`を使用します。
+Si nous étions dans le répertoire `data`, nous utiliserions le chemin relatif `../fig_output/fig1.pdf` ou le même chemin absolu `/home/user/bioc-intro/fig_output/fig1.pdf`.
 
-## Rの操作
+## Interagir avec R
 
-プログラミングの基本は、コンピュータが従うべき指示を書き出し、その指示に従うようコンピュータに指示することです。Rで指示を書き出す、つまり*コード*を書くのは、Rがコンピュータと人間の双方が理解できる共通言語だからです。これらの指示を*コマンド*と呼び、それらのコマンドを*実行*（*ラン*とも呼びます）することで、コンピュータにその指示に従わせます。
+Le principe de la programmation consiste à rédiger des instructions que l'ordinateur doit suivre, puis à lui demander de les exécuter. Nous rédigeons, ou *codons*, des instructions en R, car c'est un langage commun que l'ordinateur et nous pouvons comprendre. Nous appelons ces instructions des *commandes* et nous demandons à l'ordinateur de les suivre en les *exécutant* (ou en les *lançant*).
 
-Rを操作する方法には、主に**コンソール**を使う方法と、**スクリプト**（コードを記述したプレーンテキストファイル）を使う方法の2通りがあります。コンソールペイン（RStudioでは左下のパネル）は、R言語で記述したコマンドを入力し、コンピュータで即座に実行できる場所です。また、実行したコマンドの結果が表示される場所でもあります。コンソールに直接コマンドを入力して`Enter`を押すことで実行できますが、セッションを閉じるとそれらの内容は消えてしまいます。
+Il existe deux principales façons d'interagir avec R : en utilisant la **console** ou en utilisant des **scripts** (fichiers texte bruts contenant votre code). La fenêtre de la console (dans RStudio, le panneau inférieur à gauche) est l'endroit où l'on peut saisir des commandes écrites dans le langage R et où l'ordinateur les exécute immédiatement. C'est également là que les résultats des commandes exécutées s'affichent. Vous pouvez saisir des commandes directement dans la console et appuyer sur `Enter` pour les exécuter, mais elles seront effacées lorsque vous fermerez la session.
 
-コードとワークフローの再現性を確保するためには、実行したいコマンドをスクリプトエディタに入力し、スクリプトを保存しておくのが得策です。そうすることで、行った操作の完全な記録が残り、誰でも（将来の自分も含めて！）自分のコンピュータで簡単に結果を再現できるようになります。ただし、単にスクリプトにコマンドを入力しただけでは、自動的に*実行*されるわけではない点に注意してください。実行するには、依然としてコンソールに送信する必要があります。
+Comme nous voulons que notre code et notre flux de travail soient reproductibles, il est préférable de saisir les commandes souhaitées dans l'éditeur de scripts et de sauvegarder le script. De cette façon, un registre complet de nos actions subsiste, et n'importe qui (y compris nous-mêmes à l'avenir !) peut facilement reproduire les résultats sur son propre ordinateur. Notez toutefois que le simple fait de saisir les commandes dans le script ne les *lance* pas automatiquement : elles doivent tout de même être envoyées à la console pour être exécutées.
 
-RStudioでは、`Ctrl` + `Enter` のショートカットを使用して、スクリプトエディタから直接コマンドを実行できます（Macでは `Cmd` + `Return` でも動作します）。`Ctrl` + `Enter` を押すと、スクリプトの現在の行（カーソルで示されている行）にあるコマンド、または現在選択されているテキスト内のすべてのコマンドがコンソールに送信され、実行されます。その他のキーボードショートカットについては、こちらの[RStudio IDEに関するRStudioチートシート](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rstudio-ide.pdf)をご覧ください。
+RStudio vous permet d'exécuter des commandes directement depuis l'éditeur de scripts en utilisant le raccourci `Ctrl` + `Enter` (sur Mac, `Cmd` + `Return` fonctionne également). La commande de la ligne actuelle du script (indiquée par le curseur) ou l'ensemble des commandes du texte actuellement sélectionné sera envoyé à la console et exécuté lorsque vous appuyerez sur `Ctrl` + `Enter`. Vous trouverez d'autres raccourcis clavier dans ce [cheatsheet RStudio concernant l'IDE RStudio](https://raw.githubusercontent.com/rstudio/cheatsheets/main/rstudio-ide.pdf).
 
-解析の途中で、スクリプトに必ずしも記録を残すことなく、変数の中身やオブジェクトの構造を確認したい場合があります。これらのコマンドは、コンソールで直接入力して実行できます。RStudioでは、`Ctrl` + `1` および `Ctrl` + `2` というショートカットを使用して、スクリプトとコンソールペインの間を切り替えることができます。
+À un moment donné de votre analyse, vous souhaiterez peut-être vérifier le contenu d'une variable ou la structure d'un objet, sans nécessairement en garder trace dans votre script. Vous pouvez saisir ces commandes et les exécuter directement dans la console. RStudio propose les raccourcis `Ctrl` + `1` et `Ctrl` + `2` qui vous permettent de basculer entre les fenêtres du script et de la console.
 
-Rがコマンドを受け付けられる状態になると、Rコンソールに`>`プロンプトが表示されます。コマンド（入力、コピー＆ペースト、またはスクリプトエディタから`Ctrl` + `Enter`を使用して送信）を受け取ると、Rはその実行を試み、準備が整い次第、結果を表示して新しい`>`プロンプトに戻り、次のコマンドを待機します。
+Lorsque R est prêt à accepter des commandes, la console affiche une invite `>`. Lorsqu'il reçoit une commande, saisie directement, copiée-collée ou envoyée depuis l'éditeur de scripts avec `Ctrl` + `Enter`, R tente de l'exécuter. Une fois l'exécution terminée, il affiche les résultats, puis une nouvelle invite `>` pour attendre de nouvelles commandes.
 
-Rがまだ完了しておらず、さらなるデータの入力を待っている状態の場合、コンソールに`+`というプロンプトが表示されます。これは、完全なコマンドの入力が完了していないことを意味します。これは、括弧や引用符を「閉じて」いない、つまり左括弧の数と右括弧の数、あるいは引用符の開きと閉じの数が一致していないためです。このような状態で、コマンドの入力が完了したと思った場合は、コンソールウィンドウ内をクリックして`Esc`を押してください。これにより、未完了のコマンドがキャンセルされ、`>`プロンプトに戻ります。
+Si R attend encore une saisie parce que la commande est incomplète, la console affiche une invite `+`. Cela signifie que vous n'avez pas fini de saisir une commande complète. Vous n'avez pas fermé une parenthèse ou des guillemets : le nombre de parenthèses ouvrantes et fermantes, ou de guillemets ouvrants et fermants, ne correspond pas. Si cela se produit alors que vous pensiez avoir terminé votre commande, cliquez dans la console et appuyez sur `Esc` ; cela annulera la commande incomplète et vous ramènera à l'invite `>`.
 
-## コース期間中および終了後に、さらに詳しく学ぶにはどうすればよいでしょうか？
+## Comment en apprendre davantage pendant et après le cours ?
 
-本コースで扱う内容を通じて、ご自身の研究のためにRを用いてデータを分析する方法の基礎に触れていただけます。ただし、データセットのクリーニングや統計手法の活用、あるいは見栄えの良いグラフの作成といった高度な操作を行うには、さらなる学習が必要です[^inthiscoure]。他のツールと同様に、Rに習熟し効率的に使いこなせるようになる最善の方法は、実際の研究課題に取り組むために活用することです。初心者の方にとって、スクリプトを一から書くのは気が遠くなるように感じられるかもしれません。また、多くの人がコードをオンラインで公開しているため、既存のコードを目的に合わせて修正して利用する方が、よりスムーズに学習を始められるでしょう。
+Le contenu abordé durant ce cours vous donnera un premier aperçu de la manière dont vous pouvez utiliser R pour analyser des données dans le cadre de vos propres recherches. Toutefois, vous devrez en apprendre davantage pour effectuer des opérations avancées, telles que le nettoyage de votre jeu de données, l'utilisation de méthodes statistiques ou la création de graphiques esthétiques[^inthiscoure]. Le meilleur moyen de devenir maître et efficace avec R, comme pour tout autre outil, est de l'utiliser pour répondre à vos questions de recherche réelles. En tant que débutant, l'idée de devoir écrire un script de zéro peut sembler intimidante et, étant donné que de nombreuses personnes mettent leur code à disposition en ligne, la modification de code existant pour l'adapter à vos besoins pourrait vous faciliter les débuts.
 
-[^inthiscoure]: ここでは（統計学を除き）その大部分を紹介しますが、Rで実現できる膨大な可能性のほんの一端に触れるにとどまります。
+[^inthiscoure]: Nous présenterons la plupart d'entre eux ici (à l'exception des statistiques), mais nous ne parviendrons qu'à effleurer la surface de la richesse des possibilités offertes par R.
 
 ```{r kitten, results="markup", echo=FALSE, purl=FALSE, out.width="400px", fig.align="center", fig.alt="Fake book cover showing a kitten with title 'Changing Stuff and Seeing What Happens.'"}
 knitr::include_graphics("fig/kitten-try-things.jpg")
 ```
 
-## ヘルプの参照
+## Chercher de l'aide
 
-### RStudio内蔵のヘルプインターフェースを使用して、R関数に関する詳細情報を検索してください。
+### Utilisez l'interface d'aide intégrée à RStudio pour rechercher plus d'informations sur les fonctions R
 
 ```{r rstudiohelp, fig.cap="RStudio help interface.", results="markup", echo=FALSE, purl=FALSE, out.width="70%", fig.align="center", fig.alt="Screenshot of RStudio's Help panel."}
 knitr::include_graphics("fig/rstudiohelp.png")
 ```
 
-ヘルプを得る最も迅速な方法の一つは、RStudioのヘルプインターフェースを利用することです。このパネルはデフォルトでRStudioの右下に配置されています。スクリーンショットにあるように、「Mean」という単語を入力すると、RStudioは関心を持ちそうな候補をいくつか提示しようとします。その後、その説明が表示ウィンドウに表示されます。
+L'un des moyens les plus rapides d'obtenir de l'aide consiste à utiliser l'interface d'aide de RStudio. Ce panneau se trouve par défaut dans le panneau inférieur droit de RStudio. Comme on peut le voir sur la capture d'écran, en saisissant le mot « Mean », RStudio tente également de proposer un certain nombre de suggestions qui pourraient vous intéresser. La description s'affiche ensuite dans la fenêtre d'affichage.
 
-### 使いたい関数の名前は分かっているのですが、使い方が分かりません。
+### Je connais le nom de la fonction que je souhaite utiliser, mais je ne sais pas comment l'utiliser
 
-特定の関数（例えば `barplot()`）についてヘルプが必要な場合は、次のように入力してください。
+Si vous avez besoin d'aide pour une fonction spécifique, disons `barplot()`, vous pouvez saisir :
 
 ```{r, eval=FALSE, purl=TRUE}
 ?barplot
 ```
 
-引数の名前を再確認したいだけであれば、以下をご利用いただけます。
+Si vous avez simplement besoin de vous rappeler le nom des arguments, vous pouvez utiliser :
 
 ```{r, eval=FALSE, purl=TRUE}
 args(lm)
 ```
 
-### Xという処理を行う関数を使いたいのですが、きっとそういう関数があるはずなのに、どれなのか分かりません……。
+### Je veux utiliser une fonction qui fait X, il doit y avoir une fonction pour ça, mais je ne sais pas laquelle...
 
-特定の処理を行う関数をお探しの場合は、ダブルクエスチョンマーク `??` で呼び出す `help.search()` 関数をご利用いただけます。ただし、この関数はインストール済みパッケージの中から、検索内容に一致するヘルプページを検索するだけです。
+Si vous recherchez une fonction pour effectuer une tâche particulière, vous pouvez utiliser la fonction `help.search()`, qui s'appelle via le double point d'interrogation `??`. Toutefois, celle-ci ne recherche dans les packages installés que des pages d'aide correspondant à votre requête de recherche.
 
 ```{r, eval=FALSE, purl=TRUE}
 ??kruskal
 ```
 
-お探しの情報が見つからない場合は、利用可能なすべてのパッケージのヘルプファイルを検索できる [rdocumentation.org](https://www.rdocumentation.org) のウェブサイトをご利用ください。
+Si vous ne trouvez pas ce que vous cherchez, vous pouvez utiliser le site [rdocumentation.org](https://www.rdocumentation.org) qui recherche dans les fichiers d'aide de tous les packages disponibles.
 
-最後に、Googleやインターネットで「R \<task>」と汎用的に検索すれば、多くの場合、適切なパッケージのドキュメントや、すでに誰かが同じ質問をしている役立つフォーラムに辿り着くでしょう。
+Enfin, une recherche Google ou sur Internet générique « R \<task> » vous dirigera souvent soit vers la documentation du package approprié, soit vers un forum utile où quelqu'un d'autre a déjà posé votre question.
 
-### 行き詰まってしまいました… 意味のわからないエラーメッセージが表示されます。
+### Je bloque... Je reçois un message d'erreur que je ne comprends pas
 
-まずはエラーメッセージをGoogleで検索してみましょう。ただし、パッケージ開発者はRが提供するエラー処理機能を利用していることが多いため、必ずしもうまく機能するとは限りません。結果として、問題の診断にあまり役立たない一般的なエラーメッセージ（例：「subscript out of bounds」）が表示されることがあります。メッセージが非常に汎用的な場合は、使用している関数やパッケージの名前も検索クエリに含めてみてください。
+Commencez par rechercher le message d'erreur sur Google. Cependant, cela ne fonctionne pas toujours très bien car les développeurs de packages s'appuient souvent sur la gestion des erreurs fournie par R. Vous vous retrouvez avec des messages d'erreur génériques qui pourraient ne pas être très utiles pour diagnostiquer un problème (par exemple : « subscript out of bounds »). Si le message est très générique, vous pouvez également inclure le nom de la fonction ou du package que vous utilisez dans votre requête.
 
-ただし、Stack Overflowも確認してみてください。`[r]`タグを使って検索してください。ほとんどの質問にはすでに回答が付いていますが、検索時に適切な言葉を選んで答えを見つけ出すのがポイントです：
+Toutefois, vous devriez consulter Stack Overflow. Effectuez une recherche en utilisant la balise `[r]`. La plupart des questions ont déjà reçu une réponse, mais le défi consiste à utiliser les bons mots dans votre recherche pour trouver les réponses :
 
 [https://stackoverflow.com/questions/tagged/r](https://stackoverflow.com/questions/tagged/r)
 
-[R入門](https://cran.r-project.org/doc/manuals/R-intro.pdf)は、プログラミング経験が少ない方には内容が難解に感じられることもありますが、R言語の基礎を理解するには最適な教材です。
+L'[Introduction à R](https://cran.r-project.org/doc/manuals/R-intro.pdf) peut également s'avérer dense pour les personnes ayant peu d'expérience en programmation, mais c'est un bon endroit pour comprendre les fondements du langage R.
 
-[R FAQ](https://cran.r-project.org/doc/FAQ/R-FAQ.html)は内容が濃密で専門的ですが、有用な情報が満載です。
+La [FAQ de R](https://cran.r-project.org/doc/FAQ/R-FAQ.html) est dense et technique, mais elle regorge d'informations utiles.
 
-### 助けを求める
+### Demander de l'aide
 
-誰かに助けてもらうための鍵は、相手に問題を迅速に把握してもらうことです。問題がどこにあるのかをできるだけ簡単に特定できるようにしてください。
+La clé pour obtenir de l'aide est que l'interlocuteur saisisse rapidement votre problème. Vous devez faciliter au maximum la localisation du défaut.
 
-問題を説明する際は、適切な言葉を使うようにしてください。例えば、「パッケージ」と「ライブラリ」は別物です。ほとんどの人は意図を理解してくれるでしょうが、この意味の違いに強いこだわりを持つ人もいます。重要なのは、助けようとしている人を混乱させてしまう可能性があるということです。問題を説明する際は、可能な限り正確に記述してください。
+Essayez d'utiliser les mots appropriés pour décrire votre problème. Par exemple, un package n'est pas la même chose qu'une bibliothèque. La plupart des gens comprendront ce que vous vouliez dire, mais d'autres ont des opinions très tranchées sur la différence de sens. Le point essentiel est que cela peut prêter à confusion pour les personnes qui tentent de vous aider. Soyez aussi précis que possible lorsque vous décrivez votre problème.
 
-可能であれば、うまくいかない箇所をシンプルな*再現可能な例*に絞り込んでください。50,000行10,000列のデータフレームではなく、ごく小規模なデータフレームで問題を再現できる場合は、その小規模なデータと問題の説明を添えてください。適宜、ご自身の分野外の人でも質問内容を理解できるよう、記述を一般化するよう心がけてください。例えば、実際のデータセットのサブセットを使うのではなく、小規模な（3列5行の）汎用的なデータセットを作成してください。再現可能な例の書き方の詳細については、[Hadley Wickham氏によるこちらの記事](https://adv-r.had.co.nz/Reproducibility.html)を参照してください。
+Si possible, essayez de réduire ce qui ne fonctionne pas à un *exemple reproductible* simple. Si vous pouvez reproduire le problème à l'aide d'un tableau de données très petit au lieu de celui de 50 000 lignes et 10 000 colonnes, fournissez ce petit tableau accompagné de la description de votre problème. Lorsque cela est approprié, essayez de généraliser votre démarche afin que même des personnes n'appartenant pas à votre domaine puissent comprendre la question. Par exemple, au lieu d'utiliser un sous-ensemble de votre jeu de données réel, créez un exemple générique petit (3 colonnes, 5 lignes). Pour plus d'informations sur la manière d'écrire un exemple reproductible, consultez [cet article de Hadley Wickham](https://adv-r.had.co.nz/Reproducibility.html).
 
-オブジェクトを他の人と共有する場合、サイズが比較的小さければ、`dput()`関数を使用できます。これにより、メモリ上のものと全く同じオブジェクトを再現できるRコードが出力されます。
+Pour partager un objet avec quelqu'un d'autre, s'il est relativement petit, vous pouvez utiliser la fonction `dput()`. Elle générera du code R permettant de recréer exactement le même objet que celui en mémoire :
 
 ```{r, results="show", purl=TRUE}
 ## iris is an example data frame that comes with R and head() is a
@@ -291,80 +291,80 @@ args(lm)
 dput(head(iris))
 ```
 
-オブジェクトのサイズが大きい場合は、生ファイル（つまりCSVファイル）と、エラーが発生する箇所までのスクリプト（問題に関係のない部分はすべて削除したもの）を併せて提供してください。あるいは、特に質問内容がデータフレームに関連していない場合は、任意のRオブジェクトをファイル[^export]に保存することも可能です：
+Si l'objet est plus volumineux, fournissez soit le fichier brut (c'est-à-dire votre fichier CSV) avec votre script jusqu'au point où survient l'erreur (et après avoir supprimé tout ce qui n'est pas pertinent pour votre problème). Alternativement, notamment si votre question n'est pas liée à un tableau de données, vous pouvez enregistrer n'importe quel objet R dans un fichier[^export] :
 
 ```{r, eval=FALSE, purl=FALSE}
 saveRDS(iris, file="/tmp/iris.rds")
 ```
 
-ただし、このファイルの内容は人間が読める形式ではないため、Stack Overflowに直接投稿することはできません。代わりに、`readRDS()`コマンドで閲覧可能な相手にメールで送信することができます（ここでは、ダウンロードしたファイルがユーザーのホームディレクトリ内の`Downloads`フォルダにあることを前提としています）：
+Le contenu de ce fichier n'est toutefois pas lisible par l'humain et ne peut pas être publié directement sur Stack Overflow. On peut plutôt l'envoyer par e-mail à quelqu'un qui pourra le lire à l'aide de la commande `readRDS()` (on suppose ici que le fichier téléchargé se trouve dans un dossier `Downloads` dans le répertoire personnel de l'utilisateur) :
 
 ```{r, eval=FALSE, purl=FALSE}
 some_data <- readRDS(file="~/Downloads/iris.rds")
 ```
 
-最後になりますが、同様に重要な点として、**必ず`sessionInfo()`の出力結果を記載してください**。そこにはお使いのプラットフォームやRおよびパッケージのバージョン、その他問題の把握に非常に役立つ情報が含まれているためです。
+Enfin, mais certainement pas des moindres, **incluez toujours la sortie de `sessionInfo()`**, car elle fournit des informations cruciales sur votre plateforme, les versions de R et des packages que vous utilisez, ainsi que d'autres informations qui peuvent s'avérer très utiles pour comprendre votre problème.
 
 ```{r, results="show", purl=TRUE}
 sessionInfo()
 ```
 
-### どこで助けを求めればよいでしょうか？
+### Où demander de l'aide ?
 
-- コース中に隣に座っている方です。ワークショップ中は、遠慮なく隣の方と話をしたり、解答を照らし合わせたり、助けを求めたりしてください。
-- 親切な仲間：自分より経験豊富な知り合いがいれば、快く助けてくれるかもしれません。
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/r)：質問にまだ回答がなく、かつ適切に構成されていれば、5分以内に回答が得られる可能性が高いです。[良い質問の仕方](https://stackoverflow.com/help/how-to-ask)に関するガイドラインに従うようにしてください。
-- [R-helpメーリングリスト](https://stat.ethz.ch/mailman/listinfo/r-help)：非常に多くの人が閲覧しており（Rコアチームの大半も含まれます）、投稿数も多いですが、口調がかなり堅苦しく、新規ユーザーを必ずしも温かく迎えてくれるとは限りません。質問内容が適切であれば、おそらく非常に早く回答が得られるでしょうが、絵文字付きの返信を期待しないでください。また、こここそ他のどこよりも、正しい用語を使うよう心がけてください（そうしないと、質問に答えるのではなく、言葉の誤用を指摘する回答が返ってくる可能性があります）。さらに、特定のパッケージではなくbase関数に関する質問の方が、よりうまく回答を得られるでしょう。
-- 特定のパッケージに関する質問の場合は、そのパッケージのメーリングリストがないか確認してください。通常、`packageDescription("name-of-package")` でアクセスできるパッケージの DESCRIPTION ファイルに記載されています。また、パッケージの作者に直接メールを送るか、コードリポジトリ（例：GitHub）で issue を起票してみるのもよいでしょう。
-- また、特定のトピックに特化したメーリングリスト（GIS、系統学など）もあり、全リストは[R-projectのメーリングリストページ](https://www.r-project.org/mail.html)でご確認いただけます。
+- La personne assise à vos côtés pendant le cours. N'hésitez pas à discuter avec votre voisin pendant l'atelier, à comparer vos réponses et à demander de l'aide.
+- Vos collègues sympathiques : si vous connaissez quelqu'un ayant plus d'expérience que vous, il pourrait être en mesure et disposé à vous aider.
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/r) : si votre question n'a jamais été traitée auparavant et qu'elle est bien formulée, vous avez de bonnes chances d'obtenir une réponse en moins de 5 min. N'oubliez pas de suivre leurs recommandations sur [la manière de poser une bonne question](https://stackoverflow.com/help/how-to-ask).
+- La [liste de diffusion R-help](https://stat.ethz.ch/mailman/listinfo/r-help) : elle est consultée par de nombreuses personnes (dont la plupart de l'équipe principale de R), et beaucoup y publient, mais le ton peut être assez sec et elle n'est pas toujours très accueillante pour les nouveaux utilisateurs. Si votre question est pertinente, vous obtiendrez probablement une réponse très rapidement, mais ne vous attendez pas à ce qu'elle soit accompagnée d'émoticônes. De plus, ici plus qu'ailleurs, veillez à utiliser un vocabulaire correct (sinon, vous pourriez recevoir une réponse soulignant l'usage incorrect de vos mots plutôt que de répondre à votre question). Vous aurez également plus de succès si votre question porte sur une fonction de base plutôt que sur un package spécifique.
+- Si votre question concerne un package spécifique, vérifiez s'il existe une liste de diffusion à son sujet. Généralement, elle figure dans le fichier DESCRIPTION du package, accessible via `packageDescription("name-of-package")`. Vous pouvez également essayer d'envoyer un e-mail directement à l'auteur du package ou d'ouvrir un ticket dans le dépôt de code (par exemple, sur GitHub).
+- Il existe également des listes de diffusion spécialisées par thème (SIG, phylogénétique, etc...), la liste complète est disponible sur la [page des listes de diffusion de R-project](https://www.r-project.org/mail.html).
 
-### その他のリソース
+### Plus de ressources
 
-- Rメーリングリストの[投稿ガイド](https://www.r-project.org/posting-guide.html)です。
+- Le [Guide de publication](https://www.r-project.org/posting-guide.html) pour les listes de diffusion R.
 
-- [Rのヘルプの求め方](https://blog.revolutionanalytics.com/2014/01/how-to-ask-for-r-help.html)の便利なガイドラインです。
+- [Comment demander de l'aide pour R](https://blog.revolutionanalytics.com/2014/01/how-to-ask-for-r-help.html) : des directives utiles.
 
-- [Jon Skeet氏によるこのブログ記事](https://codeblog.jonskeet.uk/2010/08/29/writing-the-perfect-question/)には、プログラミングに関する質問の仕方について、かなり網羅的なアドバイスが記載されています。
+- [Cet article de blog de Jon Skeet](https://codeblog.jonskeet.uk/2010/08/29/writing-the-perfect-question/) propose des conseils assez complets sur la manière de poser des questions de programmation.
 
-- [reprex](https://cran.rstudio.com/web/packages/reprex/) パッケージは、ヘルプを求める際に再現可能な例を作成するのに非常に役立ちます。rOpenSciコミュニティの呼びかけ「回答を得られる質問の仕方」([GitHubリンク](https://github.com/ropensci/commcalls/issues/14)および[動画録画](https://vimeo.com/208749032))では、reprexパッケージとその理念についての解説が行われています。
+- Le package [reprex](https://cran.rstudio.com/web/packages/reprex/) est très utile pour créer des exemples reproductibles lorsque l'on demande de l'aide. La réunion en ligne de la communauté rOpenSci intitulée « How to ask questions so they get answered » ([lien GitHub](https://github.com/ropensci/commcalls/issues/14) et [enregistrement vidéo](https://vimeo.com/208749032)) comprend une présentation du package reprex et de sa philosophie.
 
-## Rパッケージ
+## Paquets R
 
-### パッケージの読み込み
+### Chargement de packages
 
-前述の通り、RではRパッケージが極めて重要な役割を果たします。パッケージがインストールされていることを前提として、その機能を利用するには、まずパッケージをロードする必要があります。これは`library()`関数を用いて行います。以下では、`ggplot2`をロードします。
+Comme nous l'avons vu plus haut, les packages R jouent un rôle fondamental dans R. Pour utiliser les fonctionnalités d'un package, à condition qu'il soit installé, nous devons d'abord le charger afin de pouvoir l'utiliser. Cela se fait avec la fonction `library()`. Ci-dessous, nous chargeons `ggplot2`.
 
 ```{r loadp, eval=FALSE, purl=TRUE}
 library("ggplot2")
 ```
 
-### パッケージのインストール
+### Installation de packages
 
-デフォルトのパッケージリポジトリは *Comprehensive R Archive Network* (CRAN) であり、CRANで提供されているパッケージはすべて `install.packages()` 関数でインストールできます。以下では、例えば後ほど学習する `dplyr` パッケージをインストールします。
+Le dépôt de packages par défaut est le *Comprehensive R Archive Network* (CRAN), et tout package disponible sur CRAN peut être installé avec la fonction `install.packages()`. Ci-dessous, par exemple, nous installons le package `dplyr` que nous découvrirons plus tard.
 
 ```{r craninstall, eval=FALSE, purl=TRUE}
 install.packages("dplyr")
 ```
 
-このコマンドを実行すると、`dplyr`パッケージとそのすべての依存関係、すなわち動作に必要となるすべてのパッケージがインストールされます。
+Cette commande installera le package `dplyr` ainsi que toutes ses dépendances, c'est-à-dire tous les packages dont il a besoin pour fonctionner.
 
-もう一つの主要なRパッケージリポジトリは、Bioconductorによって管理されています。[Bioconductorパッケージ](https://bioconductor.org/packages/release/BiocViews.html#___Software)は、専用のパッケージである`BiocManager`を用いて管理・インストールされます。このパッケージは、CRANから以下のようにインストールできます。
+Un autre dépôt majeur de packages R est géré par Bioconductor. Les [packages Bioconductor](https://bioconductor.org/packages/release/BiocViews.html#___Software) sont gérés et installés à l'aide d'un package dédié, à savoir `BiocManager`, qui peut être installé depuis CRAN avec
 
 ```{r, eval=FALSE, purl=TRUE}
 install.packages("BiocManager")
 ```
 
-`SummarizedExperiment`（後ほど使用します）や`DESeq2`（RNA-Seq解析用）、その他BioconductorやCRANの各種パッケージは、`BiocManager::install`でインストールできます。
+Des packages individuels tels que `SummarizedExperiment` (nous l'utiliserons plus tard), `DESeq2` (pour l'analyse RNA-Seq) et tout autre provenant de Bioconductor ou de CRAN peuvent ensuite être installés avec `BiocManager::install`.
 
 ```{r, eval=FALSE, purl=TRUE}
 BiocManager::install("SummarizedExperiment")
 BiocManager::install("DESeq2")
 ```
 
-デフォルトでは、`BiocManager::install()`はインストール済みのすべてのパッケージを確認し、より新しいバージョンがないかもチェックします。新しいバージョンがある場合は、それを表示して`Update all/some/none? [a/s/n]:`するかどうかを尋ね、回答を待ちます。可能な限り最新のパッケージバージョンを維持することが望ましいですが、実際には、パッケージを読み込む前の新規Rセッションでのみパッケージを更新することを推奨します。
+Par défaut, `BiocManager::install()` vérifiera également tous vos packages installés pour voir s'il existe des versions plus récentes. Si c'est le cas, il vous les présentera et vous demandera si vous souhaitez `Update all/some/none? [a/s/n]:`, puis attendra votre réponse. Bien que vous devriez vous efforcer d'avoir les versions de packages les plus récentes, nous recommandons en pratique de ne mettre à jour les packages que lors d'une session R neuve, avant qu'aucun package ne soit chargé.
 
 :::::::::::::::::::::::::::::::::::::::: keypoints
 
-- RとRStudioを使い始めましょう
+- Commencer à utiliser R et RStudio
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::

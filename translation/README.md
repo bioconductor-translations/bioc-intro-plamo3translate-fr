@@ -1,7 +1,7 @@
-# Updating the Japanese translation
+# Updating the French translation
 
 Run these commands from the repository root. The translator reads English Rmd
-files from a Git revision and writes Japanese Rmd files under `episodes/`.
+files from a Git revision and writes French Rmd files under `episodes/`.
 It reads the source revision without checking it out or merging it into the
 working tree.
 
@@ -24,8 +24,8 @@ revision, or an `hf download --local-dir` directory with its `.cache/`
 metadata intact.
 
 Cached replay and planning work with Python 3.12 alone, on any platform, without
-loading MLX or downloading weights. The initial reviewed memory contains 945
-translation records, including instructor notes in HTML comments.
+loading MLX or downloading weights. The versioned memory stores translations
+and their review status, including instructor notes in HTML comments.
 
 ## Preview an upstream update
 
@@ -35,7 +35,9 @@ If this clone has no `upstream` remote, add it once:
 git remote add upstream https://github.com/carpentries-incubator/bioc-intro.git
 ```
 
-Fetch the English revision and inspect the translation plan:
+Ensure an existing `upstream` remote points to the English lesson at
+`https://github.com/carpentries-incubator/bioc-intro.git`, rather than a
+translated fork. Fetch the English revision and inspect the translation plan:
 
 ```sh
 git fetch upstream main
@@ -58,8 +60,8 @@ git diff -- episodes translation
 Rscript scripts/build.R
 ```
 
-Unchanged passages reuse the reviewed memory. New or changed prose is sent to
-the pinned model. Review new Japanese text for technical terminology, exercise
+Unchanged passages reuse matching memory records. New or changed prose is sent to
+the pinned model. Review new French text for technical terminology, exercise
 conditions, and meaning before committing the lesson and memory changes.
 The tool does not commit or push changes.
 
@@ -77,7 +79,7 @@ normal update that must also be completed entirely from memory.
 ## Protecting local edits and lesson structure
 
 The translator checks output hashes against the supplied baseline and the last
-successful run. It stops before replacing an edited Japanese lesson. Review or
+successful run. It stops before replacing an edited French lesson. Review or
 save those edits first; `--overwrite` explicitly permits replacing edited
 outputs.
 
@@ -105,7 +107,7 @@ Review skipped adaptations when upstream changes their source excerpts.
 Use a local English episode directory instead of a Git revision when needed:
 
 ```sh
-uv run --locked scripts/translate.py --source-dir /path/to/english/episodes --output-dir /path/to/japanese/episodes
+uv run --locked scripts/translate.py --source-dir /path/to/english/episodes --output-dir /path/to/french/episodes
 ```
 
 Choose separate directory trees: the input and output directories must differ
@@ -120,9 +122,10 @@ The versioned resources in this directory are:
 
 - `config.json`: model revision, source remote, prompt settings, and resource
   paths. Use `--config /path/to/config.json` to select another configuration.
-- `seed-cache.json`: the reusable reviewed translations, keyed by normalized
-  masked source text and unit kind, and restricted to their episode filenames.
-- `glossary.json`: shared English-to-Japanese terminology.
+- `seed-cache.json`: reusable translations and review statuses, keyed by
+  normalized masked source text and unit kind, and restricted to their episode
+  filenames. Newly generated French records are marked `machine` until reviewed.
+- `glossary.json`: shared English-to-French terminology.
 - `reviewed-context.json`: disambiguation and glossary overrides selected by
   exact source keys and filenames, rather than paragraph numbers.
 - `source-manifest.json`: English revision, model provenance, and file hashes.
@@ -140,9 +143,10 @@ reviewed translation or refine its context/glossary before rerunning.
 
 Generated memory records retain the profile of the model, prompt, glossary,
 and context settings used to create them. Changing those settings requires
-fresh generation for those machine records. The initial 945 reviewed records
-remain stable for matching source text in their original episodes. The same
-English text can have separate translations in different episodes, so adding a
+fresh generation for those machine records. Reviewed records remain stable
+for matching source text in their original episodes, provided their language
+pair matches the configuration. The same English text can have separate
+translations in different episodes, so adding a
 translation in one chapter does not replace another chapter's wording.
 
 The translator updates Rmd lessons only. Synchronize upstream images, datasets,

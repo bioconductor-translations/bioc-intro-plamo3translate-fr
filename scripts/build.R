@@ -11,7 +11,7 @@ main <- function() {
   if (length(script) != 1L) stop("Run this script with Rscript")
   root <- dirname(dirname(normalizePath(script, mustWork = TRUE)))
 
-  # LC_ALL=C.UTF-8 prevents gettext from selecting the Japanese theme strings.
+  # LC_ALL=C.UTF-8 prevents gettext from selecting the French theme strings.
   # This affects this build process only; no shell or system settings are changed.
   Sys.unsetenv("LC_ALL")
   packages <- c("sandpaper", "rmarkdown", "varnish", "jsonlite")

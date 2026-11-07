@@ -1,4 +1,4 @@
-"""Preservation checks for the source-to-Japanese lesson translation workflow.
+"""Preservation checks for the lesson translation workflow.
 
 These fixtures deliberately include syntax that can look like translatable prose.
 They run without MLX, model weights, network access, or an R installation.
@@ -530,6 +530,52 @@ class TranslationCliTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.run_cli(["--cache-only"], forbid_backend=True)
                 self.assertEqual((self.output / "new-lesson.Rmd").read_bytes(), output)
+
+    def test_reviewed_memory_is_scoped_to_its_source_and_target_languages(self):
+        config_path, config, directory = self.copy_translation_resources()
+        config["model"]["source_language"] = "en"
+        config["model"]["target_language"] = "ja"
+        config_path.write_text(json.dumps(config))
+        self.write_source("A reviewed-language-pair fixture paragraph.\n")
+        self.run_cli(["--update-memory"])
+        memory_path = directory / config["memory"]
+        memory = json.loads(memory_path.read_text())
+        document = core.extract_document((self.source / "new-lesson.Rmd").read_text(), "new-lesson.Rmd")
+        key = core.unit_key(document.units[0])
+        memory["records"][key]["review_status"] = "reviewed"
+        (self.cache / "cache.jsonl").unlink()
+        original_config = json.loads(config_path.read_text())
+        expected = (self.output / "new-lesson.Rmd").read_bytes()
+
+        # Both the original catalog-level metadata and newer per-record models
+        # must prevent an approved Japanese translation from replaying as French.
+        for metadata in ("catalog", "record", "variant"):
+            with self.subTest(metadata=metadata):
+                reviewed = json.loads(json.dumps(memory))
+                record = reviewed["records"][key]
+                if metadata == "catalog":
+                    reviewed["model"] = original_config["model"]
+                    record.pop("model")
+                elif metadata == "variant":
+                    record["variants"] = {"new-lesson.Rmd": {
+                        "translation": record["translation"], "review_status": "reviewed",
+                        "model": original_config["model"],
+                    }}
+                memory_path.write_text(json.dumps(reviewed))
+                # Reviewed translations remain reusable across model revisions.
+                updated = json.loads(json.dumps(original_config))
+                updated["model"]["revision"] = "0" * 40
+                config_path.write_text(json.dumps(updated))
+                self.run_cli(["--check"], forbid_backend=True)
+                for language_key, language in (("target_language", "fr"), ("source_language", "de")):
+                    updated = json.loads(json.dumps(original_config))
+                    updated["model"][language_key] = language
+                    config_path.write_text(json.dumps(updated))
+                    for mode in ("--cache-only", "--check"):
+                        with self.subTest(language_key=language_key, mode=mode):
+                            with self.assertRaisesRegex(ValueError, "1 uncached passages"):
+                                self.run_cli([mode], forbid_backend=True)
+                            self.assertEqual((self.output / "new-lesson.Rmd").read_bytes(), expected)
 
     def test_update_memory_preserves_distinct_translations_for_each_file(self):
         self.copy_translation_resources()
