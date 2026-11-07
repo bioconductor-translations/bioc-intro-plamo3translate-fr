@@ -80,6 +80,26 @@ uv run --locked scripts/translate.py --source-ref upstream/main --update-memory
 See [the translation guide](translation/README.md) for setup, offline replay,
 reviewing new translations, and protecting local edits.
 
+## Publishing the site
+
+In the repository's **Settings > Pages**, select **GitHub Actions** as the
+build and deployment source. The `Build and publish GitHub Pages` workflow
+builds the lesson on each push to `main`, uploads `site/docs/` as a Pages
+artifact, and deploys it to the `github-pages` environment. It can also be run
+manually from the Actions tab.
+
+The workflow uses R 4.6.1, pins Sandpaper and Varnish to the versions used for
+the local build, and installs the other listed R and Bioconductor packages from
+the configured repositories. It does not restore the lesson's `renv` lockfile,
+so package versions can differ from a locked local build. Rendering also
+downloads the public datasets referenced in the lessons.
+
+This artifact-based deployment replaces the Workbench branch deployment. The
+remaining Workbench pull-request preview workflows require an independently
+maintained `md-outputs` branch; this deployment does not create it. When
+reviewing automated Workbench workflow updates, retain the custom Pages
+workflow and avoid restoring the old branch deployment.
+
 ## Testing locally
 
 The translation tests need Python 3.12 only; they do not load the model or use
